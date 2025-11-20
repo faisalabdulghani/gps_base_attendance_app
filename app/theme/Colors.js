@@ -1,0 +1,16 @@
+export const Colors = {
+    PRIMARYPURPLE: "#7B2FF7",
+    PRIMARYBLUE: "#00C6FF",
+    SKYBLUE: "#4FD3FF",
+    LAVENDERLIGHT: " #D9C2FF",
+    SOFTCYAN: "#B9F3FF",
+    TEXTDARK: "#1A1A1A",
+    TEXTMEDIUM: "#4D4D4D",
+    TEXTLIGHT: "#8C8C8C",
+    WHITE: "#FFFFFF",
+    OFFWHITE: "#F7F9FC",
+    PRESENT: "#28C76F",
+    LATE: "#FFB400",
+    ABSENT: "#FF4D4F",
+    LEAVE: " #2D9CDB"
+}
