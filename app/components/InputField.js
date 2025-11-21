@@ -19,7 +19,7 @@ export default function InputField({
             <TextInput
                 style={styles.input}
                 placeholder={placeholder}
-                placeholderTextColor={Colors.TEXTLIGHT}
+                placeholderTextColor={Colors.WHITE}
                 secureTextEntry={hide}
                 value={value}
                 onChangeText={onChangeText}
@@ -30,7 +30,7 @@ export default function InputField({
                     <Ionicons
                         name={hide ? "eye-off-outline" : "eye-outline"}
                         size={22}
-                        color="#9CA3AF"
+                        color={Colors.WHITE}
                     />
                 </TouchableOpacity>
             )}
@@ -43,7 +43,7 @@ const styles = StyleSheet.create({
         width: "90%",
         flexDirection: "row",
         alignItems: "center",
-        backgroundColor: Colors.TEXTDARK,
+        backgroundColor: Colors.DARKGREY,
         paddingHorizontal: 12,
         paddingVertical: 4,
         borderRadius: 10,
@@ -54,6 +54,6 @@ const styles = StyleSheet.create({
     },
     input: {
         flex: 1,
-        color: "#fff",
+        color: Colors.LIGHTGREY,
     },
 });
