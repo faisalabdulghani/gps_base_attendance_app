@@ -16,5 +16,6 @@ export const Colors = {
     PRESENT: "#22C55E",
     LATE: "#F59E0B",
     ABSENT: "#FF4D4F",
-    LEAVE: "#2D9CDB"
+    LEAVE: "#2D9CDB",
+    DIVIDERCOLOR: "#e5e7eb"
 }

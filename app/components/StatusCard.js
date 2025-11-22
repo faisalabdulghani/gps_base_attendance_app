@@ -112,7 +112,7 @@ const styles = StyleSheet.create({
     },
     divider: {
         height: 1,
-        backgroundColor: "#e5e7eb",
+        backgroundColor: Colors.DIVIDERCOLOR,
         marginVertical: 16,
     },
     timeRow: {
@@ -137,6 +137,6 @@ const styles = StyleSheet.create({
     verticalDivider: {
         width: 1,
         height: 40,
-        backgroundColor: "#e5e7eb",
+        backgroundColor: Colors.DIVIDERCOLOR,
     },
 });
