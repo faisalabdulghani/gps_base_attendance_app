@@ -7,13 +7,14 @@ export const Colors = {
     SOFTCYAN: "#B9F3FF",
     TEXTDARK: "#1A1A1A",
     DARKGREY: "#4D4D4D",
-    LIGHTGREY: "#8C8C8C",
+    LIGHTGREY: "#9ca3af",
     TEXTMEDIUM: "#4D4D4D",
     TEXTLIGHT: "#8C8C8C",
     WHITE: "#FFFFFF",
+    BLACK: "#000",
     OFFWHITE: "#F7F9FC",
-    PRESENT: "#28C76F",
-    LATE: "#000000ff",
+    PRESENT: "#22C55E",
+    LATE: "#F59E0B",
     ABSENT: "#FF4D4F",
-    LEAVE: " #2D9CDB"
+    LEAVE: "#2D9CDB"
 }

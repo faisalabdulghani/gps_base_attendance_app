@@ -54,6 +54,6 @@ const styles = StyleSheet.create({
     },
     input: {
         flex: 1,
-        color: Colors.LIGHTGREY,
+        color: Colors.WHITE,
     },
 });

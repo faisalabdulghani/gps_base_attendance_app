@@ -4,6 +4,7 @@ import InputField from '../components/InputField';
 import { Ionicons } from "@expo/vector-icons";
 import { Colors } from '../theme/Colors';
 import { LinearGradient } from 'expo-linear-gradient';
+import StatusCard from '../components/StatusCard';
 
 
 
@@ -12,27 +13,21 @@ export default function LoginScreen() {
 
 
     return (
+        <LinearGradient
+            colors={[Colors.PRIMARYPURPLE, Colors.PRIMARYBLUE]}
+            start={{ x: 0.2, y: 0 }}
+            end={{ x: 0, y: 1 }}
+            style={styles.container}
+        >
+            <StatusCard
+                statusColor={Colors.PRESENT}
+                totalTime="08:15"
 
-        <View style={styles.container}>
-            <InputField
-                icon={<Ionicons name="mail-outline" size={20} color={Colors.WHITE} />}
-                placeholder="Enter your email"
-                value={email}
-                onChangeText={setEmail}
+                checkOut="05:15 PM"
             />
-            <InputField
-                icon={<Ionicons name="mail-outline" size={20} color={Colors.WHITE} />}
-                placeholder="Enter your email"
-                value={email}
-                onChangeText={setEmail}
-            />
-            <InputField
-                icon={<Ionicons name="mail-outline" size={20} color={Colors.WHITE} />}
-                placeholder="Enter your email"
-                value={email}
-                onChangeText={setEmail}
-            />
-        </View>
+
+
+        </LinearGradient>
     );
 }
 
