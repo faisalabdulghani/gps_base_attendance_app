@@ -8,6 +8,7 @@ import StatusCard from '../components/StatusCard';
 import StatsCard from '../components/StatsCard';
 import GradientButton from '../components/GradientButton';
 import DistanceFromOfficeCard from '../components/DistanceFromOfficeCard';
+import LeaveCard from '../components/LeaveCard';
 
 
 
@@ -23,7 +24,26 @@ export default function LoginScreen() {
             style={styles.container}
         >
 
-            <DistanceFromOfficeCard />
+            <LeaveCard
+                title="Annual Leave"
+                dateRange="Oct 25, 2023 - Oct 27, 2023"
+                reason="Family vacation to the coast"
+                status="Approved"
+            />
+
+            <LeaveCard
+                title="Sick Leave"
+                dateRange="Sep 12, 2023"
+                reason="Doctor's appointment and check-up"
+                status="Pending"
+            />
+
+            <LeaveCard
+                title="Unpaid Leave"
+                dateRange="Aug 02, 2023"
+                reason="Attending a personal event"
+                status="Rejected"
+            />
 
 
         </LinearGradient>
