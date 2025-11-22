@@ -5,6 +5,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { Colors } from '../theme/Colors';
 import { LinearGradient } from 'expo-linear-gradient';
 import StatusCard from '../components/StatusCard';
+import StatsCard from '../components/StatsCard';
 
 
 
@@ -14,17 +15,15 @@ export default function LoginScreen() {
 
     return (
         <LinearGradient
-            colors={[Colors.PRIMARYPURPLE, Colors.PRIMARYBLUE]}
+            colors={[Colors.PRIMARYPURPLE, Colors.WHITE]}
             start={{ x: 0.2, y: 0 }}
             end={{ x: 0, y: 1 }}
             style={styles.container}
         >
-            <StatusCard
-                statusColor={Colors.PRESENT}
-                totalTime="08:15"
 
-                checkOut="05:15 PM"
-            />
+            <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+                <StatsCard label="Late Days" value="3" width='50%' />
+            </View>
 
 
         </LinearGradient>
