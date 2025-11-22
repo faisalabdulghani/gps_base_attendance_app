@@ -6,6 +6,7 @@ import { Colors } from '../theme/Colors';
 import { LinearGradient } from 'expo-linear-gradient';
 import StatusCard from '../components/StatusCard';
 import StatsCard from '../components/StatsCard';
+import GradientButton from '../components/GradientButton';
 
 
 
@@ -21,9 +22,11 @@ export default function LoginScreen() {
             style={styles.container}
         >
 
-            <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-                <StatsCard label="Late Days" value="3" width='50%' />
-            </View>
+            <GradientButton
+                title="Mark Attendance"
+                icon="finger-print-outline"
+                onPress={() => console.log("Pressed")}
+            />
 
 
         </LinearGradient>
@@ -34,7 +37,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: "center",
-        alignItems: "center",
+        //alignItems: "center",
         backgroundColor: Colors.BACKGROUND
     },
 });
