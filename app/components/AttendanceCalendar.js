@@ -34,7 +34,7 @@ export default function LoginScreen() {
                         customStyles: {
                             container: {
                                 borderWidth: 2,
-                                borderColor: Colors.PRIMARYPURPLE,
+                                borderColor: Colors.BLACK,
                                 width: 32,
                                 height: 32,
                                 borderRadius: 10,

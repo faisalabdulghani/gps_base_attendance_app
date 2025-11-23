@@ -4,6 +4,7 @@ import { Colors } from '../theme/Colors';
 import AttendanceCalendar from '../components/AttendanceCalendar';
 import StatsCard from '../components/StatsCard';
 import AttendanceCard from '../components/AttendanceCard';
+import StatusLegend from '../components/StatusLegend';
 
 export default function LoginScreen() {
     const [selected, setSelected] = useState("2025-11-23");
@@ -26,6 +27,8 @@ export default function LoginScreen() {
                 selectedDate={selected}
                 onSelectDate={setSelected}
             />
+            <View></View>
+            <StatusLegend />
 
             {/* Stats fixed */}
             <View style={styles.statsRow}>
@@ -33,6 +36,7 @@ export default function LoginScreen() {
                 <StatsCard title="Absent" value="2" width="30%" />
                 <StatsCard title="Late" value="1" width="30%" />
             </View>
+
 
             {/* SCROLL ONLY THIS PART */}
             <View style={{ flex: 1 }}>
