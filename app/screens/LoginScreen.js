@@ -26,23 +26,49 @@ export default function LoginScreen() {
     };
 
     return (
-        <LinearGradient
-            colors={[Colors.WHITE, Colors.WHITE]}
-            start={{ x: 0.2, y: 0 }}
-            end={{ x: 0, y: 1 }}
+        <View
+            // colors={[Colors.WHITE, Colors.WHITE]}
+            // start={{ x: 0.2, y: 0 }}
+            // end={{ x: 0, y: 1 }}
             style={styles.container}
         >
+            <View style={{ backgroundColor: "red" }}>
+                <AttendanceCalendar
+                    markedDates={attendanceData}
+                    selectedDate={selected}
+                    onSelectDate={setSelected}
 
-            <AttendanceCalendar
-                markedDates={attendanceData}
-                selectedDate={selected}
-                onSelectDate={setSelected}
+                />
+            </View>
 
-            />
+            <View style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                marginVertical: 8,
+                //backgroundColor: "red"
+            }}>
+                <StatsCard
+                    title='Present'
+                    value='20'
+                    width="30%"
+
+                />
+                <StatsCard
+                    title='Absent'
+                    value='2'
+                    width="30%" />
+                <StatsCard
+                    title='Late'
+                    value='1'
+                    width="30%"
+                />
+            </View>
 
 
 
-        </LinearGradient>
+
+
+        </View>
     );
 }
 
@@ -51,7 +77,7 @@ const styles = StyleSheet.create({
         flex: 1,
         // justifyContent: "center",
         // alignItems: "center",
-        paddingHorizontal: 6,
-        backgroundColor: Colors.BACKGROUND
+        paddingHorizontal: 14,
+        //backgroundColor: "red"
     },
 });
