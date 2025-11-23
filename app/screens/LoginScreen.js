@@ -1,17 +1,9 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
-import InputField from '../components/InputField';
-import { Ionicons } from "@expo/vector-icons";
+import { View, StyleSheet, ScrollView } from 'react-native';
 import { Colors } from '../theme/Colors';
-import { LinearGradient } from 'expo-linear-gradient';
-import StatusCard from '../components/StatusCard';
-import StatsCard from '../components/StatsCard';
-import GradientButton from '../components/GradientButton';
-import DistanceFromOfficeCard from '../components/DistanceFromOfficeCard';
-import LeaveCard from '../components/LeaveCard';
 import AttendanceCalendar from '../components/AttendanceCalendar';
-
-
+import StatsCard from '../components/StatsCard';
+import AttendanceCard from '../components/AttendanceCard';
 
 export default function LoginScreen() {
     const [selected, setSelected] = useState("2025-11-23");
@@ -26,47 +18,61 @@ export default function LoginScreen() {
     };
 
     return (
-        <View
-            // colors={[Colors.WHITE, Colors.WHITE]}
-            // start={{ x: 0.2, y: 0 }}
-            // end={{ x: 0, y: 1 }}
-            style={styles.container}
-        >
-            <View style={{ backgroundColor: "red" }}>
-                <AttendanceCalendar
-                    markedDates={attendanceData}
-                    selectedDate={selected}
-                    onSelectDate={setSelected}
+        <View style={styles.container}>
 
-                />
+            {/* Calendar fixed at top */}
+            <AttendanceCalendar
+                markedDates={attendanceData}
+                selectedDate={selected}
+                onSelectDate={setSelected}
+            />
+
+            {/* Stats fixed */}
+            <View style={styles.statsRow}>
+                <StatsCard title="Present" value="20" width="30%" />
+                <StatsCard title="Absent" value="2" width="30%" />
+                <StatsCard title="Late" value="1" width="30%" />
             </View>
 
-            <View style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                marginVertical: 8,
-                //backgroundColor: "red"
-            }}>
-                <StatsCard
-                    title='Present'
-                    value='20'
-                    width="30%"
+            {/* SCROLL ONLY THIS PART */}
+            <View style={{ flex: 1 }}>
+                <ScrollView
+                    showsVerticalScrollIndicator={false}
+                    contentContainerStyle={{ paddingBottom: 40 }}
+                >
+                    <AttendanceCard
+                        dateLabel="Mon, Oct 28"
+                        status="Present"
+                        inTime="09:02 AM"
+                        outTime="05:58 PM"
+                        totalTime="8h 56m"
+                    />
 
-                />
-                <StatsCard
-                    title='Absent'
-                    value='2'
-                    width="30%" />
-                <StatsCard
-                    title='Late'
-                    value='1'
-                    width="30%"
-                />
+                    <AttendanceCard
+                        dateLabel="Tue, Oct 29"
+                        status="Absent"
+                        inTime={null}
+                        outTime={null}
+                        totalTime="0h 0m"
+                    />
+
+                    <AttendanceCard
+                        dateLabel="Wed, Oct 30"
+                        status="Late"
+                        inTime="09:17 AM"
+                        outTime="06:05 PM"
+                        totalTime="8h 48m"
+                    />
+
+                    <AttendanceCard
+                        dateLabel="Thu, Oct 31"
+                        status="Leave"
+                        inTime={null}
+                        outTime={null}
+                        totalTime="0h 0m"
+                    />
+                </ScrollView>
             </View>
-
-
-
-
 
         </View>
     );
@@ -75,9 +81,11 @@ export default function LoginScreen() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        // justifyContent: "center",
-        // alignItems: "center",
         paddingHorizontal: 14,
-        //backgroundColor: "red"
     },
+    statsRow: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+        marginVertical: 10,
+    }
 });

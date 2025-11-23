@@ -1,4 +1,3 @@
-import React from "react";
 import { View, StyleSheet, Text, Dimensions } from "react-native";
 import { Calendar } from "react-native-calendars";
 import { Colors } from "../theme/Colors";
@@ -110,7 +109,6 @@ const styles = StyleSheet.create({
         marginTop: 40,
         backgroundColor: Colors.WHITE,
         width: width * 0.93,
-        //alignSelf: "center",
         borderRadius: 10,
         elevation: 4,
         shadowColor: Colors.BLACK,
