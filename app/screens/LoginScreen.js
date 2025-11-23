@@ -9,12 +9,21 @@ import StatsCard from '../components/StatsCard';
 import GradientButton from '../components/GradientButton';
 import DistanceFromOfficeCard from '../components/DistanceFromOfficeCard';
 import LeaveCard from '../components/LeaveCard';
+import AttendanceCalendar from '../components/AttendanceCalendar';
 
 
 
 export default function LoginScreen() {
-    const [email, setEmail] = useState("");
+    const [selected, setSelected] = useState("2025-11-23");
 
+    const attendanceData = {
+        "2025-11-01": { marked: true, dotColor: "green" },
+        "2025-11-02": { marked: true, dotColor: "red" },
+        "2025-11-06": { marked: true, dotColor: "green" },
+        "2025-11-07": { marked: true, dotColor: "green" },
+        "2026-03-30": { marked: true, dotColor: "orange" },
+        "2026-03-31": { marked: true, dotColor: "orange" },
+    };
 
     return (
         <LinearGradient
@@ -24,26 +33,13 @@ export default function LoginScreen() {
             style={styles.container}
         >
 
-            <LeaveCard
-                title="Annual Leave"
-                dateRange="Oct 25, 2023 - Oct 27, 2023"
-                reason="Family vacation to the coast"
-                status="Approved"
+            <AttendanceCalendar
+                markedDates={attendanceData}
+                selectedDate={selected}
+                onSelectDate={setSelected}
+
             />
 
-            <LeaveCard
-                title="Sick Leave"
-                dateRange="Sep 12, 2023"
-                reason="Doctor's appointment and check-up"
-                status="Pending"
-            />
-
-            <LeaveCard
-                title="Unpaid Leave"
-                dateRange="Aug 02, 2023"
-                reason="Attending a personal event"
-                status="Rejected"
-            />
 
 
         </LinearGradient>
@@ -53,9 +49,9 @@ export default function LoginScreen() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-        padding: 6,
+        // justifyContent: "center",
+        // alignItems: "center",
+        paddingHorizontal: 6,
         backgroundColor: Colors.BACKGROUND
     },
 });
