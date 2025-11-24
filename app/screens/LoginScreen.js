@@ -6,6 +6,7 @@ import StatsCard from '../components/StatsCard';
 import AttendanceCard from '../components/AttendanceCard';
 import StatusLegend from '../components/StatusLegend';
 import TodayDate from '../components/TodayDate';
+import GeoLocationLog from '../components/GeoLocationLog';
 
 export default function LoginScreen() {
     const [selected, setSelected] = useState("2025-11-23");
@@ -82,7 +83,12 @@ export default function LoginScreen() {
         // </View>
         <View style={styles.container}>
             <TodayDate dateLabel="Mon, 28 Oct 2024" />
-
+            <GeoLocationLog
+                checkInAdress='123 Main Street, Anytown, USA'
+                checkOutAdress='123 Main Street, Anytown, USA'
+                checkInTime='09:02 AM'
+                checkOutTime='09:02 AM'
+            />
 
         </View>
     );
