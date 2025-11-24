@@ -10,6 +10,9 @@ import GeoLocationLog from '../components/GeoLocationLog';
 import AttendanceDetailCard from '../components/AttendanceDetailCard';
 import ProfileDetailCard from '../components/ProfileDetailCard';
 import SettingsItem from '../components/SettingsItem';
+import SettingsToggleItem from '../components/SettingsToggleItem';
+import { Ionicons } from "@expo/vector-icons";
+
 
 export default function LoginScreen() {
     const [selected, setSelected] = useState("2025-11-23");
@@ -22,6 +25,8 @@ export default function LoginScreen() {
         "2026-03-30": { marked: true, dotColor: "orange" },
         "2026-03-31": { marked: true, dotColor: "orange" },
     };
+    const [pushNotif, setPushNotif] = useState(true);
+    const [emailAlerts, setEmailAlerts] = useState(false);
 
     return (
         // <View style={styles.container}>
@@ -96,6 +101,17 @@ export default function LoginScreen() {
                 icon="document-text-outline"
                 title1="Privacy Policy"
                 icon1="shield-checkmark-outline"
+            />
+            <SettingsToggleItem
+                icon1={<Ionicons name="notifications-outline" />}
+                title1="Push Notifications"
+                value1={pushNotif}
+                onValueChange1={setPushNotif}
+
+                icon2={<Ionicons name="mail-outline" />}
+                title2="Email Alerts"
+                value2={emailAlerts}
+                onValueChange2={setEmailAlerts}
             />
 
 
