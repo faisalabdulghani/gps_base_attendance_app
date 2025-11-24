@@ -1,7 +1,7 @@
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { Colors } from "../theme/Colors";
-import { Ionicons } from "@expo/vector-icons";
+import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 
 export default function AttendanceCard({
     dateLabel,        // "Mon, Oct 28"
@@ -35,10 +35,10 @@ export default function AttendanceCard({
             badgeColor: Colors.LATE,
         },
         Leave: {
-            icon: "time",
-            iconBg: "#FFF7E6",
+            icon: "exit",
+            iconBg: "#2d9cdb33",
             iconColor: Colors.LEAVE,
-            badgeBg: "#FFF7E6",
+            badgeBg: "#2d9cdb33",
             badgeColor: Colors.LEAVE,
         },
     };
@@ -53,12 +53,13 @@ export default function AttendanceCard({
             </View>
 
             {/* MIDDLE SECTION */}
-            <View style={{ flex: 1 }}>
+            <View style={styles.datacontainer}>
                 <Text style={styles.dateText}>{dateLabel}</Text>
 
                 <Text style={styles.timeText}>
-                    In: {inTime || "--:-- --"}  •  Out: {outTime || "--:-- --"}
+                    In: {inTime || "--:-- --"}
                 </Text>
+                <Text style={styles.timeText}>Out: {outTime || "--:-- --"} </Text>
                 <Text style={styles.totalText}>Total: {totalTime}</Text>
             </View>
 
@@ -75,20 +76,25 @@ export default function AttendanceCard({
 const styles = StyleSheet.create({
     card: {
         flexDirection: "row",
-        backgroundColor: "#fff",
+        backgroundColor: Colors.WHITE,
         padding: 16,
-        borderRadius: 16,
-        elevation: 3,
-        marginBottom: 16,
-        alignItems: "center",
+        borderRadius: 10,
+        marginVertical: 8,
+        //alignItems: "center",
     },
     iconContainer: {
         width: 50,
         height: 50,
-        borderRadius: 12,
+        borderRadius: 10,
         justifyContent: "center",
         alignItems: "center",
-        marginRight: 16,
+        //margin: 16,
+    },
+
+    datacontainer: {
+        width: "60%",
+        paddingHorizontal: 10,
+        flexDirection: "column"
     },
     dateText: {
         fontSize: 16,
@@ -96,23 +102,25 @@ const styles = StyleSheet.create({
         color: Colors.BLACK,
     },
     timeText: {
-        marginTop: 4,
+        marginVertical: 2,
         fontSize: 14,
-        color: "#6B7280",
+        color: Colors.TEXTLIGHT,
     },
     totalText: {
-        marginTop: 4,
+        paddingVertical: 2,
         fontSize: 14,
-        color: "#6B7280",
+        color: Colors.TEXTDARK,
         fontWeight: "500",
     },
     badge: {
         paddingHorizontal: 12,
         paddingVertical: 6,
-        borderRadius: 20,
+        borderRadius: 10,
+        height: 28,
     },
     badgeText: {
         fontSize: 13,
         fontWeight: "600",
+        textAlign: "center"
     },
 });
