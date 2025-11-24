@@ -9,6 +9,7 @@ import TodayDate from '../components/TodayDate';
 import GeoLocationLog from '../components/GeoLocationLog';
 import AttendanceDetailCard from '../components/AttendanceDetailCard';
 import ProfileDetailCard from '../components/ProfileDetailCard';
+import SettingsItem from '../components/SettingsItem';
 
 export default function LoginScreen() {
     const [selected, setSelected] = useState("2025-11-23");
@@ -85,19 +86,18 @@ export default function LoginScreen() {
         // </View>
         <View style={styles.container}>
 
-            <ProfileDetailCard
-                title="Employment Details"
-                label="Employee ID"
-                value="EMP-0042"
-                icon="id-card-outline"
+            {/* <SettingsItem
+                title="Manage Data Sharing"
+                icon="share-social-outline"
+            /> */}
+
+            <SettingsItem
+                title="Terms of Service"
+                icon="document-text-outline"
+                title1="Privacy Policy"
+                icon1="shield-checkmark-outline"
             />
 
-            <ProfileDetailCard
-                title="Employment Details"
-                label="Department"
-                value="Technology"
-                icon="briefcase-outline"
-            />
 
         </View>
     );

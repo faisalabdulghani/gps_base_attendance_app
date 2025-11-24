@@ -3,7 +3,7 @@ import { View, Text, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { Colors } from "../theme/Colors";
 
-export default function ProfileDetailCard({ title, label, value, icon }) {
+export default function ProfileDetailCard({ title, label, value, icon, label1, value1, icon1 }) {
     return (
         <View style={styles.card}>
             <Text style={styles.title}>{title}</Text>
@@ -20,12 +20,12 @@ export default function ProfileDetailCard({ title, label, value, icon }) {
             </View>
             <View style={styles.row}>
                 <View style={styles.iconContainer}>
-                    <Ionicons name={icon} size={24} color={Colors.DARKGREY} />
+                    <Ionicons name={icon1} size={24} color={Colors.DARKGREY} />
                 </View>
 
                 <View>
-                    <Text style={styles.label}>{label}</Text>
-                    <Text style={styles.value}>{value}</Text>
+                    <Text style={styles.label}>{label1}</Text>
+                    <Text style={styles.value}>{value1}</Text>
                 </View>
             </View>
         </View>
