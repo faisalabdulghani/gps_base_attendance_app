@@ -4,8 +4,13 @@ import StatsCard from '../components/StatsCard'
 import GradientButton from '../components/GradientButton'
 import { Colors } from '../theme/Colors'
 import MainHeader from '../components/MainHeader'
-import { LinearGradient } from 'expo-linear-gradient'
+import { useNavigation } from '@react-navigation/native'
+
+
 export default function HomeScreen() {
+
+    const navigation = useNavigation();
+
     return (
         <View style={styles.container}>
 
@@ -28,6 +33,7 @@ export default function HomeScreen() {
                 <GradientButton
                     title="Mark Attendance"
                     icon="finger-print-outline"
+                    onPress={() => navigation.navigate("MarkAttendance")}
                 />
 
 
