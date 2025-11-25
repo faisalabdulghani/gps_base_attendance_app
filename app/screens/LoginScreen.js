@@ -81,7 +81,7 @@ const styles = {
         marginVertical: 2
     },
     forgotText: {
-        color: Colors.PRIMARYBLUE,
+        color: Colors.ABSENT,
         textAlign: "right",
         fontSize: 14,
         fontWeight: "500",

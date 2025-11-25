@@ -11,7 +11,7 @@ export default function Button({ title = "Button", onPress, buttonWidth = "80%",
             style={{ width: buttonWidth }}
         >
             <LinearGradient
-                colors={[Colors.PRIMARYBLUE, Colors.PRIMARYPURPLE]}
+                colors={[Colors.BLACK, Colors.WHITE]}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
                 style={[styles.gradient, { height: buttonHeight }]}
