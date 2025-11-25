@@ -14,8 +14,8 @@ const ToggleItemRow = ({ icon, title, value, onValueChange, showDivider }) => {
                 <Switch
                     value={value}
                     onValueChange={onValueChange}
-                    thumbColor={value ? "#fff" : "#f4f3f4"}
-                    trackColor={{ false: "#d3d3d3", true: Colors.PRIMARY }}
+                    thumbColor={"#d3d3d3"}
+                    trackColor={{ false: "#d3d3d3", true: Colors.BLACK }}
                 />
             </View>
 
@@ -28,31 +28,37 @@ export default ToggleItemRow;
 
 const styles = StyleSheet.create({
     rowContainer: {
-        flexDirection: "row",
-        justifyContent: "space-between",
+
+        backgroundColor: Colors.WHITE,
         alignItems: "center",
-        paddingVertical: 14,
+        borderRadius: 10,
+        flexDirection: "row",
+        justifyContent: "space-between"
+
     },
     leftSection: {
         flexDirection: "row",
         alignItems: "center",
+        paddingVertical: 10
     },
     iconContainer: {
-        width: 42,
-        height: 42,
-        borderRadius: 12,
-        backgroundColor: "#F3F0FF",
-        justifyContent: "center",
+        width: 35,
+        height: 35,
+        borderRadius: 10,
         alignItems: "center",
-        marginRight: 12,
+        justifyContent: "center",
+        backgroundColor: Colors.LIGHTGREY + "20"
     },
     title: {
-        fontSize: 16,
-        color: Colors.BLACK,
+        fontSize: 15,
+        color: Colors.DARKGREY,
+        paddingHorizontal: 4,
+        alignSelf: "center"
     },
     divider: {
-        height: 1,
-        backgroundColor: "#EDEDED",
-        marginLeft: 60,
+        borderWidth: 0.5,
+        borderColor: Colors.DIVIDERCOLOR,
+        width: "95%",
+        alignSelf: "center"
     },
 });

@@ -54,7 +54,6 @@ const styles = StyleSheet.create({
         paddingHorizontal: 14,
         alignItems: "center",
         borderRadius: 10,
-        elevation: 1,
     },
     divider: {
         borderWidth: 0.5,

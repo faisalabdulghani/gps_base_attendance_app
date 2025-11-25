@@ -103,12 +103,12 @@ export default function LoginScreen() {
                 icon1="shield-checkmark-outline"
             />
             <SettingsToggleItem
-                icon1={<Ionicons name="notifications-outline" />}
+                icon1={<Ionicons name="notifications-outline" size={20} color={Colors.LIGHTGREY} />}
                 title1="Push Notifications"
                 value1={pushNotif}
                 onValueChange1={setPushNotif}
 
-                icon2={<Ionicons name="mail-outline" />}
+                icon2={<Ionicons name="mail-outline" size={20} color={Colors.LIGHTGREY} />}
                 title2="Email Alerts"
                 value2={emailAlerts}
                 onValueChange2={setEmailAlerts}
