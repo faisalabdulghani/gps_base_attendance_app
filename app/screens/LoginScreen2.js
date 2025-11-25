@@ -1,0 +1,133 @@
+import React, { useState } from 'react';
+import { View, StyleSheet, ScrollView } from 'react-native';
+import { Colors } from '../theme/Colors';
+import AttendanceCalendar from '../components/AttendanceCalendar';
+import StatsCard from '../components/StatsCard';
+import AttendanceCard from '../components/AttendanceCard';
+import StatusLegend from '../components/StatusLegend';
+import TodayDate from '../components/TodayDate';
+import GeoLocationLog from '../components/GeoLocationLog';
+import AttendanceDetailCard from '../components/AttendanceDetailCard';
+import ProfileDetailCard from '../components/ProfileDetailCard';
+import SettingsItem from '../components/SettingsItem';
+import SettingsToggleItem from '../components/SettingsToggleItem';
+import { Ionicons } from "@expo/vector-icons";
+
+
+export default function LoginScreen2() {
+    const [selected, setSelected] = useState("2025-11-23");
+
+    const attendanceData = {
+        "2025-11-01": { marked: true, dotColor: "green" },
+        "2025-11-02": { marked: true, dotColor: "red" },
+        "2025-11-06": { marked: true, dotColor: "green" },
+        "2025-11-07": { marked: true, dotColor: "green" },
+        "2026-03-30": { marked: true, dotColor: "orange" },
+        "2026-03-31": { marked: true, dotColor: "orange" },
+    };
+    const [pushNotif, setPushNotif] = useState(true);
+    const [emailAlerts, setEmailAlerts] = useState(false);
+
+    return (
+        // <View style={styles.container}>
+
+        //     {/* Calendar fixed at top */}
+        //     <AttendanceCalendar
+        //         markedDates={attendanceData}
+        //         selectedDate={selected}
+        //         onSelectDate={setSelected}
+        //     />
+        //     <View></View>
+        //     <StatusLegend />
+
+        //     {/* Stats fixed */}
+        //     <View style={styles.statsRow}>
+        //         <StatsCard title="Present" value="20" width="30%" />
+        //         <StatsCard title="Absent" value="2" width="30%" />
+        //         <StatsCard title="Late" value="1" width="30%" />
+        //     </View>
+
+
+        //     {/* SCROLL ONLY THIS PART */}
+        //     <View style={{ flex: 1 }}>
+        //         <ScrollView
+        //             showsVerticalScrollIndicator={false}
+        //             contentContainerStyle={{ paddingBottom: 40 }}
+        //         >
+        //             <AttendanceCard
+        //                 dateLabel="Mon, Oct 28"
+        //                 status="Present"
+        //                 inTime="09:02 AM"
+        //                 outTime="05:58 PM"
+        //                 totalTime="8h 56m"
+        //             />
+
+        //             <AttendanceCard
+        //                 dateLabel="Tue, Oct 29"
+        //                 status="Absent"
+        //                 inTime={null}
+        //                 outTime={null}
+        //                 totalTime="0h 0m"
+        //             />
+
+        //             <AttendanceCard
+        //                 dateLabel="Wed, Oct 30"
+        //                 status="Late"
+        //                 inTime="09:17 AM"
+        //                 outTime="06:05 PM"
+        //                 totalTime="8h 48m"
+        //             />
+
+        //             <AttendanceCard
+        //                 dateLabel="Thu, Oct 31"
+        //                 status="Leave"
+        //                 inTime={null}
+        //                 outTime={null}
+        //                 totalTime="0h 0m"
+        //             />
+        //         </ScrollView>
+        //     </View>
+
+        // </View>
+        <View style={styles.container}>
+
+            {/* <SettingsItem
+                title="Manage Data Sharing"
+                icon="share-social-outline"
+            /> */}
+
+            <SettingsItem
+                title="Terms of Service"
+                icon="document-text-outline"
+                title1="Privacy Policy"
+                icon1="shield-checkmark-outline"
+            />
+            <SettingsToggleItem
+                icon1={<Ionicons name="notifications-outline" size={20} color={Colors.LIGHTGREY} />}
+                title1="Push Notifications"
+                value1={pushNotif}
+                onValueChange1={setPushNotif}
+
+                icon2={<Ionicons name="mail-outline" size={20} color={Colors.LIGHTGREY} />}
+                title2="Email Alerts"
+                value2={emailAlerts}
+                onValueChange2={setEmailAlerts}
+            />
+
+
+        </View>
+    );
+}
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        paddingHorizontal: 14,
+        justifyContent: "center"
+    },
+    statsRow: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+        marginVertical: 10,
+    }
+});

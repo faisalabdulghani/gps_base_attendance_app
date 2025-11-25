@@ -1,9 +1,10 @@
-import { Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { Text, TouchableOpacity, StyleSheet, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Colors } from '../theme/Colors';
 
 export default function Button({ title = "Button", onPress, buttonWidth = "80%", buttonHeight = 45 }) {
     return (
+
         <TouchableOpacity
             onPress={onPress}
             activeOpacity={0.7}
@@ -18,6 +19,7 @@ export default function Button({ title = "Button", onPress, buttonWidth = "80%",
                 <Text style={styles.text}>{title}</Text>
             </LinearGradient>
         </TouchableOpacity>
+
     );
 }
 
