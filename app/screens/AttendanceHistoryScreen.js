@@ -10,7 +10,6 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function AttendanceHistoryScreen() {
 
-    const [selected, setSelected] = useState("2025-11-23");
 
 
     const attendanceData = {
@@ -29,8 +28,7 @@ export default function AttendanceHistoryScreen() {
             />
             <AttendanceCalendar
                 markedDates={attendanceData}
-                selectedDate={selected}
-                onSelectDate={setSelected}
+
             />
             <StatusLegend />
 
@@ -96,6 +94,6 @@ const styles = StyleSheet.create({
     statsRow: {
         flexDirection: "row",
         justifyContent: "space-between",
-        marginVertical: 10,
+        marginVertical: 2,
     }
 });

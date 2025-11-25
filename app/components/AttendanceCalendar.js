@@ -4,16 +4,8 @@ import { Colors } from "../theme/Colors";
 
 const { width, height } = Dimensions.get("window");
 
-export default function LoginScreen() {
-    const attendanceData = {
-        "2025-11-01": { marked: true, dotColor: "green" },
-        "2025-11-02": { marked: true, dotColor: "red" },
-        "2025-11-06": { marked: true, dotColor: "green" },
-        "2025-11-07": { marked: true, dotColor: "green" },
-        "2025-11-20": { marked: true, dotColor: "orange" },
-        "2026-03-30": { marked: true, dotColor: "orange" },
-        "2026-03-31": { marked: true, dotColor: "orange" },
-    };
+export default function AttendanceCalendar({ markedDates = {} }) {
+
 
     const today = new Date().toISOString().split("T")[0];
 
@@ -49,7 +41,7 @@ export default function LoginScreen() {
 
                     // Attendance dots
                     ...Object.fromEntries(
-                        Object.entries(attendanceData).map(([date, value]) => [
+                        Object.entries(markedDates).map(([date, value]) => [
                             date,
                             {
                                 ...value,
