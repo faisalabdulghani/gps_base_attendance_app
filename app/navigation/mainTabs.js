@@ -5,6 +5,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import HomeScreen from '../screens/HomeScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import MarkAttendanceScreen from '../screens/MarkAttendanceScreen';
+import AttendanceHistoryScreen from '../screens/AttendanceHistoryScreen';
 
 const Tab = createBottomTabNavigator();
 
@@ -24,6 +25,7 @@ export default function MainTabs() {
             <Tab.Screen name="Home" component={HomeScreen} />
             <Tab.Screen name="Profile" component={ProfileScreen} />
             <Tab.Screen name="MarkAttendance" component={MarkAttendanceScreen} />
+            <Tab.Screen name="AttendanceHistory" component={AttendanceHistoryScreen} />
         </Tab.Navigator>
     );
 }
