@@ -14,7 +14,7 @@ const GradientButton = ({
     return (
         <TouchableOpacity activeOpacity={0.2} onPress={onPress}>
             <LinearGradient
-                colors={[Colors.PRIMARYBLUE, Colors.PRIMARYPURPLE]}
+                colors={[Colors.BLACK, Colors.WHITE]}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
                 style={styles.button}

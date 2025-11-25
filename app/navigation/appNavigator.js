@@ -4,7 +4,7 @@ import AuthStack from './authStack';
 import MainTabs from './mainTabs';
 
 export default function AppNavigator() {
-    const isLoggedIn = false;
+    const isLoggedIn = true;
 
     return (
         <NavigationContainer>
