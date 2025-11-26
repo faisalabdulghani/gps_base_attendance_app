@@ -9,7 +9,7 @@ export default function GeoLocationLog({
     checkInTime = "",
     checkOutTime = "",
 }) {
-    const [open, setOpen] = useState(false);
+    const [open, setOpen] = useState(true);
 
     return (
         <View style={styles.card}>

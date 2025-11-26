@@ -18,7 +18,9 @@ const StatusCard = ({
     };
 
     return (
-        <View style={styles.card}>
+        <View
+            style={styles.card}
+        >
             {/* Header Row */}
             <View style={styles.headerRow}>
                 <Text style={styles.title}>Today's Status</Text>
@@ -66,8 +68,7 @@ const styles = StyleSheet.create({
         shadowColor: Colors.BLACK,
         shadowOpacity: 0.05,
         shadowRadius: 10,
-        shadowOffset: { width: 0, height: 2 },
-        elevation: 3,
+
         width: "100%",
     },
     headerRow: {

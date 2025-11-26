@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet } from 'react-native'
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
 import StatusCard from '../components/StatusCard'
 import StatsCard from '../components/StatsCard'
 import GradientButton from '../components/GradientButton'
@@ -20,13 +20,17 @@ export default function HomeScreen() {
             </View>
 
             {/* STATUS CARD (OVERLAPPING ON HEADER) */}
-            <View style={styles.statusCardWrapper}>
+            <TouchableOpacity
+                style={styles.statusCardWrapper}
+                onPress={() => navigation.navigate('DailyAttendanceDetail')}
+
+            >
                 <StatusCard
                     statusColor={Colors.PRESENT}
                     totalTime="08:15"
                     checkOut="05:15 PM"
                 />
-            </View>
+            </TouchableOpacity>
 
             {/* REST OF SCREEN */}
             <View style={styles.content}>
