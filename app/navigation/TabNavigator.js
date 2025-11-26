@@ -1,40 +1,31 @@
-// navigation/MainTabs.js
-
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import CustomTabBar from "./CustomTabBar";
 
-// STACKS
-import HomeStack from "./HomeStack";
-import ProfileStack from "./ProfileStack";
-import LeaveStack from "./LeaveStack";
-
-// DIRECT SCREENS
+// Screens
+import HomeScreen from "../screens/HomeScreen";
 import MarkAttendanceScreen from "../screens/MarkAttendanceScreen";
 import AttendanceHistoryScreen from "../screens/AttendanceHistoryScreen";
+import LeaveScreen from "../screens/LeaveScreen";
+import ProfileScreen from "../screens/ProfileScreen";
 
 const Tab = createBottomTabNavigator();
 
-export default function MainTabs() {
+export default function TabNavigator() {
     return (
         <Tab.Navigator
-            screenOptions={{
-                headerShown: false,
-            }}
             tabBar={(props) => <CustomTabBar {...props} />}
+            screenOptions={{ headerShown: false }}
         >
-
-            {/* HOME → has nested screens like DailyAttendanceDetail */}
             <Tab.Screen
                 name="Home"
-                component={HomeStack}
+                component={HomeScreen}
                 options={{
                     tabBarIcon: "home-outline",
                     tabBarLabel: "Home",
                 }}
             />
 
-            {/* MARK ATTENDANCE */}
             <Tab.Screen
                 name="MarkAttendance"
                 component={MarkAttendanceScreen}
@@ -44,7 +35,6 @@ export default function MainTabs() {
                 }}
             />
 
-            {/* ATTENDANCE HISTORY */}
             <Tab.Screen
                 name="AttendanceHistory"
                 component={AttendanceHistoryScreen}
@@ -54,26 +44,23 @@ export default function MainTabs() {
                 }}
             />
 
-            {/* LEAVE → has nested screens */}
             <Tab.Screen
                 name="Leave"
-                component={LeaveStack}
+                component={LeaveScreen}
                 options={{
                     tabBarIcon: "document-outline",
                     tabBarLabel: "Leave",
                 }}
             />
 
-            {/* PROFILE → has nested screens */}
             <Tab.Screen
                 name="Profile"
-                component={ProfileStack}
+                component={ProfileScreen}
                 options={{
                     tabBarIcon: "person-outline",
                     tabBarLabel: "Profile",
                 }}
             />
-
         </Tab.Navigator>
     );
 }
