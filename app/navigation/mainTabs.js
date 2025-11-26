@@ -6,6 +6,8 @@ import HomeScreen from '../screens/HomeScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import MarkAttendanceScreen from '../screens/MarkAttendanceScreen';
 import AttendanceHistoryScreen from '../screens/AttendanceHistoryScreen';
+import LeaveScreen from '../screens/LeaveScreen';
+import LeaveRequestScreen from '../screens/LeaveRequestScreen';
 
 const Tab = createBottomTabNavigator();
 
@@ -22,6 +24,8 @@ export default function MainTabs() {
                 },
             }}
         >
+            <Tab.Screen name="Leave" component={LeaveScreen} />
+            <Tab.Screen name="LeaveRequest" component={LeaveRequestScreen} />
             <Tab.Screen name="Home" component={HomeScreen} />
             <Tab.Screen name="Profile" component={ProfileScreen} />
             <Tab.Screen name="MarkAttendance" component={MarkAttendanceScreen} />

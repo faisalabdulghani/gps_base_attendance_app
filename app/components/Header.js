@@ -4,7 +4,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { Colors } from '../theme/Colors';
 import { useNavigation } from '@react-navigation/native';
 
-export default function Header({ title, onBack }) {
+export default function Header({ title, }) {
 
     const navigation = useNavigation()
     return (
