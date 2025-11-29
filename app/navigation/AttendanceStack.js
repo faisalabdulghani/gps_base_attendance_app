@@ -8,7 +8,6 @@ const Stack = createNativeStackNavigator();
 export default function AttendanceStack() {
     return (
         <Stack.Navigator screenOptions={{ headerShown: false }}>
-            <Stack.Screen name="MarkAttendance" component={MarkAttendanceScreen} />
             <Stack.Screen name="AttendanceHistory" component={AttendanceHistoryScreen} />
         </Stack.Navigator>
     );

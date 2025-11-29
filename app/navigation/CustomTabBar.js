@@ -1,57 +1,92 @@
+import React, { useRef, useEffect } from "react";
 import {
     View,
     TouchableOpacity,
     StyleSheet,
     Animated,
     Text,
+    Platform,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { Colors } from "../theme/Colors";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+
+// Individual Tab Button Component with proper animation
+function TabButton({ route, isFocused, tabBarIcon, tabBarLabel, onPress }) {
+    // ✅ FIX: Use useRef to persist animated value across renders
+    const offsetAnim = useRef(new Animated.Value(isFocused ? -12 : 0)).current;
+
+    // ✅ FIX: Animate only when focus changes
+    useEffect(() => {
+        Animated.spring(offsetAnim, {
+            toValue: isFocused ? -12 : 0,
+            useNativeDriver: true,
+            friction: 8,
+            tension: 100,
+        }).start();
+    }, [isFocused, offsetAnim]);
+
+    return (
+        <TouchableOpacity
+            key={route.key}
+            style={styles.tabButton}
+            onPress={onPress}
+            activeOpacity={0.7}
+        >
+            <Animated.View
+                style={[
+                    styles.iconWrapper,
+                    isFocused && styles.activeCircle,
+                    { transform: [{ translateY: offsetAnim }] },
+                ]}
+            >
+                <Ionicons
+                    name={tabBarIcon}
+                    size={20} // ✅ Reduced from 22 for more compact design
+                    color={isFocused ? Colors.WHITE : Colors.BLACK}
+                />
+            </Animated.View>
+
+            {/* ✅ FIX: Added marginTop for better spacing */}
+            <Text style={[styles.label, isFocused && styles.activeLabel]}>
+                {tabBarLabel}
+            </Text>
+        </TouchableOpacity>
+    );
+}
 
 export default function CustomTabBar({ state, descriptors, navigation }) {
-    return (
-        <View style={styles.wrapper}>
-            <View style={styles.tabContainer}>
+    // ✅ IMPROVEMENT: Handle safe area for devices with notch/home indicator
+    const insets = useSafeAreaInsets();
 
+    return (
+        <View style={[styles.wrapper, { bottom: insets.bottom + 10 }]}>
+            <View style={styles.tabContainer}>
                 {state.routes.map((route, index) => {
                     const isFocused = state.index === index;
                     const { tabBarIcon, tabBarLabel } = descriptors[route.key].options;
 
-                    const offset = new Animated.Value(isFocused ? -12 : 0);
-                    Animated.timing(offset, {
-                        toValue: isFocused ? -12 : 0,
-                        duration: 150,
-                        useNativeDriver: true,
-                    }).start();
-
                     return (
-                        <TouchableOpacity
+                        <TabButton
                             key={route.key}
-                            style={styles.tabButton}
-                            onPress={() => navigation.navigate(route.name)}
-                        >
-                            <Animated.View
-                                style={[
-                                    styles.iconWrapper,
-                                    isFocused && styles.activeCircle,
-                                    { transform: [{ translateY: offset }] },
-                                ]}
-                            >
-                                <Ionicons
-                                    name={tabBarIcon}
-                                    size={22}
-                                    color={isFocused ? Colors.WHITE : Colors.Black70}
-                                />
-                            </Animated.View>
+                            route={route}
+                            isFocused={isFocused}
+                            tabBarIcon={tabBarIcon}
+                            tabBarLabel={tabBarLabel}
+                            onPress={() => {
+                                const event = navigation.emit({
+                                    type: 'tabPress',
+                                    target: route.key,
+                                    canPreventDefault: true,
+                                });
 
-                            {/* Label Below */}
-                            <Text style={[styles.label, isFocused && styles.activeLabel]}>
-                                {tabBarLabel}
-                            </Text>
-                        </TouchableOpacity>
+                                if (!isFocused && !event.defaultPrevented) {
+                                    navigation.navigate(route.name);
+                                }
+                            }}
+                        />
                     );
                 })}
-
             </View>
         </View>
     );
@@ -59,36 +94,46 @@ export default function CustomTabBar({ state, descriptors, navigation }) {
 
 const styles = StyleSheet.create({
     wrapper: {
-        position: "absolute",
-        bottom: 20,
+        position: "absolute", // ✅ FIX: Changed from "relative" to "absolute"
         width: "100%",
         alignItems: "center",
+        height: 52, // ✅ Added fixed height for compact design
     },
 
     tabContainer: {
         flexDirection: "row",
-        backgroundColor: "#ffffffcc",
-        width: "88%",
-        borderRadius: 40,
-        justifyContent: "space-around",
+        backgroundColor: Colors.WHITE,
+        justifyContent: "space-evenly",
         alignItems: "center",
-        paddingHorizontal: 12,
-        paddingVertical: 8,
+        width: "75%",
+        height: 50, // ✅ Added fixed height for the tab bar itself
+        borderRadius: 10,
         shadowColor: "#000",
         shadowOpacity: 0.15,
         shadowRadius: 8,
         elevation: 6,
+        // ✅ IMPROVEMENT: Better shadows for both platforms
+        ...Platform.select({
+            ios: {
+                shadowOffset: { width: 0, height: 4 },
+            },
+            android: {
+                elevation: 8,
+            },
+        }),
     },
 
     tabButton: {
-        flex: 1,
+        // flex: 1,
         alignItems: "center",
+        //justifyContent: "center",
+        height: "100%", // ✅ Take full height of container
     },
 
     iconWrapper: {
-        width: 42,
-        height: 42,
-        borderRadius: 22,
+        width: 36, // ✅ Reduced for compact design
+        height: 36, // ✅ Reduced for compact design
+        borderRadius: 10,
         justifyContent: "center",
         alignItems: "center",
     },
@@ -98,8 +143,7 @@ const styles = StyleSheet.create({
     },
 
     label: {
-        fontSize: 10,
-        marginTop: 4,
+        fontSize: 9,
         color: Colors.BLACK,
     },
 

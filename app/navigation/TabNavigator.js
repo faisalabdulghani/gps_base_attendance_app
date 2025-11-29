@@ -1,13 +1,12 @@
+// navigation/TabNavigator.js
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import CustomTabBar from "./CustomTabBar";
 
-// Screens
-import HomeScreen from "../screens/HomeScreen";
-import MarkAttendanceScreen from "../screens/MarkAttendanceScreen";
-import AttendanceHistoryScreen from "../screens/AttendanceHistoryScreen";
-import LeaveScreen from "../screens/LeaveScreen";
-import ProfileScreen from "../screens/ProfileScreen";
+import HomeStack from "./HomeStack";
+import AttendanceStack from "./AttendanceStack";
+import LeaveStack from "./LeaveStack";
+import ProfileStack from "./ProfileStack";
 
 const Tab = createBottomTabNavigator();
 
@@ -18,8 +17,8 @@ export default function TabNavigator() {
             screenOptions={{ headerShown: false }}
         >
             <Tab.Screen
-                name="Home"
-                component={HomeScreen}
+                name="HomeTab"  // Changed from "Home" to "HomeTab"
+                component={HomeStack}
                 options={{
                     tabBarIcon: "home-outline",
                     tabBarLabel: "Home",
@@ -27,17 +26,8 @@ export default function TabNavigator() {
             />
 
             <Tab.Screen
-                name="MarkAttendance"
-                component={MarkAttendanceScreen}
-                options={{
-                    tabBarIcon: "finger-print-outline",
-                    tabBarLabel: "Attendance",
-                }}
-            />
-
-            <Tab.Screen
-                name="AttendanceHistory"
-                component={AttendanceHistoryScreen}
+                name="AttendanceTab"  // Changed from "AttendanceHistory" to "AttendanceTab"
+                component={AttendanceStack}
                 options={{
                     tabBarIcon: "time-outline",
                     tabBarLabel: "History",
@@ -45,8 +35,8 @@ export default function TabNavigator() {
             />
 
             <Tab.Screen
-                name="Leave"
-                component={LeaveScreen}
+                name="LeaveTab"  // Changed from "Leave" to "LeaveTab"
+                component={LeaveStack}
                 options={{
                     tabBarIcon: "document-outline",
                     tabBarLabel: "Leave",
@@ -54,8 +44,8 @@ export default function TabNavigator() {
             />
 
             <Tab.Screen
-                name="Profile"
-                component={ProfileScreen}
+                name="ProfileTab"  // Changed from "Profile" to "ProfileTab"
+                component={ProfileStack}
                 options={{
                     tabBarIcon: "person-outline",
                     tabBarLabel: "Profile",
