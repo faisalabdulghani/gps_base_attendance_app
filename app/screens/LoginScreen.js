@@ -1,61 +1,94 @@
-import { View, Text, TouchableOpacity } from "react-native";
-import React from "react";
+import { View, Text, TouchableOpacity, Alert } from "react-native";
+import React, { useState, useContext } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import Button from "../components/Button";
 import { useNavigation } from "@react-navigation/native";
 import InputField from "../components/InputField";
 import { Colors } from "../theme/Colors";
+import { loginUser } from "../api/authApi";
+import { AuthContext } from "../context/AuthContext";
+import { showSuccessMsg, showErrorMsg } from "../components/ToastMessage";
 
 export default function LoginScreen() {
     const navigation = useNavigation();
+    const { login } = useContext(AuthContext);
+
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [loading, setLoading] = useState(false);
+
+    const handleLogin = () => {
+        if (!email || !password) {
+            Alert.alert("Missing Fields", "Email and password are required");
+            return;
+        }
+
+        setLoading(true);
+
+        loginUser(email, password)
+            .then(async (res) => {
+                console.log("Response: ", res.data);
+                const token = res?.data?.token;
+                const user = res?.data?.user;
+
+                if (!token) {
+                    showErrorMsg("Invalid response from server");
+                    return;
+                }
+
+                // CALL CONTEXT LOGIN
+                await login(token, user);
+
+                showSuccessMsg("Login Successful");
+            })
+            .catch((err) => {
+                const msg =
+                    err?.response?.data?.message ||
+                    "Login failed. Please try again.";
+                showErrorMsg(msg);
+            })
+            .finally(() => setLoading(false));
+    };
 
     return (
         <View style={styles.container}>
+            <Text style={styles.title}>Welcome Back</Text>
+            <Text style={styles.subtitle}>Log in to manage your attendance</Text>
 
-            {/* Title */}
-            <View>
-                <Text style={styles.title}>Welcome Back</Text>
-                <Text style={styles.subtitle}>Log in to manage your attendance</Text>
-            </View>
-
-            {/* Input fields */}
             <View style={styles.inputContainer}>
-
                 <InputField
                     icon={<Ionicons name="mail-outline" size={20} color={Colors.LIGHTGREY} />}
-                    placeholder="Enter your email address"
+                    placeholder="Enter your email"
+                    value={email}
                     secure={false}
+                    onChangeText={setEmail}
                 />
 
                 <InputField
                     icon={<Ionicons name="lock-closed-outline" size={20} color={Colors.LIGHTGREY} />}
                     placeholder="Enter your password"
                     secure={true}
+                    value={password}
+                    onChangeText={setPassword}
                 />
 
-                {/* Forgot Password */}
-                <TouchableOpacity
-                    onPress={() => navigation.navigate("ForgetPassword")}
-                >
+                <TouchableOpacity onPress={() => navigation.navigate("ForgetPassword")}>
                     <Text style={styles.forgotText}>Forgot Password?</Text>
                 </TouchableOpacity>
             </View>
 
-            {/* Login Button */}
-            <View style={styles.button}>
-                <Button title="Login" buttonWidth="90%" />
-            </View>
+            <Button
+                title={loading ? "Please wait..." : "Login"}
+                buttonWidth="90%"
+                onPress={handleLogin}
+            />
 
-            {/* Sign Up */}
             <View style={styles.signupRow}>
                 <Text style={{ color: Colors.BLACK }}>Don't have an account? </Text>
                 <TouchableOpacity onPress={() => navigation.navigate("SignUp")}>
-                    <Text style={{
-                        color: Colors.BLACK, fontWeight: "bold", fontSize: 14,
-                    }}>Sign Up</Text>
+                    <Text style={{ color: Colors.BLACK, fontWeight: "bold" }}>Sign Up</Text>
                 </TouchableOpacity>
             </View>
-
         </View>
     );
 }
