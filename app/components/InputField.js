@@ -6,7 +6,7 @@ import { Colors } from "../theme/Colors";
 export default function InputField({
     icon,
     placeholder,
-    secure = true,
+    secure = false,
     value,
     onChangeText,
 }) {
