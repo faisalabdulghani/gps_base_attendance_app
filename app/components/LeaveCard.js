@@ -2,24 +2,34 @@ import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { MaterialIcons, Entypo } from "@expo/vector-icons";
 import { Colors } from "../theme/Colors";
+import format from "date-fns/format/index.js";
 
 const LeaveCard = ({ title, dateRange, reason, status }) => {
+
+
+    const formatDate = (dateRange) => {
+        try {
+            return format(new Date(dateRange), "dd MMM yyyy");
+        } catch {
+            return dateRange;
+        }
+    };
     // Status styling logic
     const getStatusStyle = () => {
         switch (status) {
-            case "Approved":
+            case "approved":
                 return {
                     bg: "#D4F8DB",
                     color: Colors.PRESENT,
                     icon: <MaterialIcons name="check-circle" size={16} color={Colors.PRESENT} />,
                 };
-            case "Pending":
+            case "pending":
                 return {
                     bg: "#FFE9B8",
                     color: Colors.LATE,
                     icon: <Entypo name="back-in-time" size={16} color={Colors.LATE} />,
                 };
-            case "Rejected":
+            case "rejected":
                 return {
                     bg: "#FFD6D6",
                     color: Colors.ABSENT,
@@ -40,7 +50,7 @@ const LeaveCard = ({ title, dateRange, reason, status }) => {
         <View style={styles.card}>
             <Text style={styles.title}>{title}</Text>
 
-            <Text style={styles.date}>{dateRange}</Text>
+            <Text style={styles.date}>{formatDate(dateRange.start)} - {formatDate(dateRange.end)}</Text>
 
             <Text style={styles.reason}>Reason: {reason}</Text>
 
@@ -69,12 +79,12 @@ const styles = StyleSheet.create({
     },
     date: {
         fontSize: 13,
-        marginVertical: 2,
+        marginVertical: 4,
         color: Colors.LIGHTGREY,
     },
     reason: {
         fontSize: 13,
-        color: Colors.TEXTDARK,
+        color: Colors.TEXTLIGHT,
     },
     statusContainer: {
         marginVertical: 6,
