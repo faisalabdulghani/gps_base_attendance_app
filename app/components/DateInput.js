@@ -4,7 +4,7 @@ import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { useState } from "react";
 import { Colors } from "../theme/Colors";
 
-export default function DateInput({ label, date, onChange }) {
+export default function DateInput({ label, date, onChange, error }) {
     const [visible, setVisible] = useState(false);
 
     return (
@@ -20,6 +20,8 @@ export default function DateInput({ label, date, onChange }) {
                 </Text>
                 <Ionicons name="calendar-outline" size={20} color={Colors.TEXTLIGHT} />
             </TouchableOpacity>
+            {error ? <Text style={styles.error}>{error}</Text> : null}
+
 
             <DateTimePickerModal
                 isVisible={visible}
@@ -60,5 +62,10 @@ const styles = StyleSheet.create({
     text: {
         fontSize: 14,
         color: Colors.LIGHTGREY
-    }
+    },
+    error: {
+        color: "red",
+        fontSize: 12,
+        padding: 2
+    },
 });

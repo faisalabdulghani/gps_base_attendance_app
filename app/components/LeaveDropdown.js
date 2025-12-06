@@ -3,7 +3,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useState } from "react";
 import { Colors } from "../theme/Colors";
 
-export default function LeaveDropdown({ label, options = [], value, onSelect }) {
+export default function LeaveDropdown({ label, options = [], value, onSelect, error }) {
     const [visible, setVisible] = useState(false);
 
     return (
@@ -20,6 +20,9 @@ export default function LeaveDropdown({ label, options = [], value, onSelect }) 
                 </Text>
                 <Ionicons name="chevron-down" size={20} color={Colors.TEXTLIGHT} />
             </TouchableOpacity>
+
+            {error ? <Text style={styles.error}>{error}</Text> : null}
+
 
             <Modal transparent visible={visible} animationType="fade">
                 <TouchableOpacity
@@ -89,5 +92,13 @@ const styles = StyleSheet.create({
         borderBottomWidth: 0.5,
         borderColor: Colors.DIVIDERCOLOR
     },
-    optionText: { fontSize: 15, color: Colors.BLACK }
+    optionText: {
+        fontSize: 15,
+        color: Colors.BLACK
+    },
+    error: {
+        color: "red",
+        fontSize: 12,
+        padding: 2
+    },
 });

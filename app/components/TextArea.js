@@ -1,7 +1,7 @@
 import { View, TextInput, Text, StyleSheet } from "react-native";
 import { Colors } from "../theme/Colors";
 
-export default function TextArea({ label, value, onChange }) {
+export default function TextArea({ label, value, onChange, error }) {
     return (
         <View >
             {label && <Text style={styles.label}>{label}</Text>}
@@ -15,6 +15,8 @@ export default function TextArea({ label, value, onChange }) {
                 onChangeText={onChange}
                 placeholderTextColor={Colors.LIGHTGREY}
             />
+            {error ? <Text style={styles.error}>{error}</Text> : null}
+
         </View>
     );
 }
@@ -33,5 +35,10 @@ const styles = StyleSheet.create({
         minHeight: 120,
         textAlignVertical: "top",
         elevation: 2,
-    }
+    },
+    error: {
+        color: "red",
+        fontSize: 12,
+        padding: 2
+    },
 });
