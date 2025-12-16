@@ -1,7 +1,7 @@
 import { View, Image, StyleSheet, AppState } from 'react-native'
 import Header from '../components/Header'
 import TaskStatusCard from '../components/TaskStatusCard'
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import DistanceFromOfficeCard from '../components/DistanceFromOfficeCard';
 import Button from '../components/Button';
@@ -18,12 +18,15 @@ export default function MarkAttendanceScreen() {
     const [insideOffice, setInsideOffice] = useState(false);
     const [isOnline, setIsOnline] = useState(false);
 
+    const intervalRef = useRef(null);
+
+
 
     const runPreChecks = async () => {
         try {
             const networkCheck = await checkInternet();
-            setIsOnline(networkCheck)
-            if (!isOnline) return;
+            setIsOnline(networkCheck);
+            if (!networkCheck) return;
 
             // 1️⃣ Ask permission (SYSTEM POPUP)
             const permissionGranted = await requestLocationPermission();
@@ -63,15 +66,20 @@ export default function MarkAttendanceScreen() {
 
 
     useEffect(() => {
-        runPreChecks(); // initial load
+        // ✅ Run immediately on mount
+        runPreChecks();
 
-        const subscription = AppState.addEventListener("change", (state) => {
-            if (state === "active") {
-                runPreChecks(); // GPS toggled from notification bar
+        // ✅ Then check every 3 seconds while user is on screen
+        intervalRef.current = setInterval(() => {
+            runPreChecks();
+        }, 3000); // Poll every 3 seconds
+
+        // ✅ Cleanup interval when screen unmounts
+        return () => {
+            if (intervalRef.current) {
+                clearInterval(intervalRef.current);
             }
-        });
-
-        return () => subscription.remove();
+        };
     }, []);
 
     const handleAttendance = async () => {

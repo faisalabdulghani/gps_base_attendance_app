@@ -1,8 +1,17 @@
 import * as Location from "expo-location";
 
 export const requestLocationPermission = async () => {
-    const { status } = await Location.requestForegroundPermissionsAsync();
-    return status === "granted";
+    const { status } = await Location.getForegroundPermissionsAsync();
+
+    if (status === "granted") return { granted: true };
+    if (status === "denied") return { granted: false, canAskAgain: false };
+
+    const { status: newStatus } = await Location.requestForegroundPermissionsAsync();
+
+    return {
+        granted: newStatus === "granted",
+        canAskAgain: newStatus !== "denied"
+    };
 };
 
 export const checkGpsEnabled = async () => {
