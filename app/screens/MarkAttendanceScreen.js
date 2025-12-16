@@ -1,191 +1,205 @@
-import { View, Image, StyleSheet, AppState } from 'react-native'
-import Header from '../components/Header'
-import TaskStatusCard from '../components/TaskStatusCard'
-import { useEffect, useRef, useState } from 'react';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import DistanceFromOfficeCard from '../components/DistanceFromOfficeCard';
-import Button from '../components/Button';
-import { markAttendance } from '../api/attendanceApi';
-import { checkGpsEnabled, getCurrentLocation, requestLocationPermission } from '../utils/location';
-import { getDistanceInMeters } from '../utils/diatance';
-import { showErrorMsg, showSuccessMsg } from '../components/ToastMessage'
-import { checkInternet } from '../utils/network';
+import { View, StyleSheet } from "react-native";
+import { useEffect, useRef, useState } from "react";
+import { SafeAreaView } from "react-native-safe-area-context";
+import MapView, { Marker, Circle } from "react-native-maps";
+
+import Header from "../components/Header";
+import TaskStatusCard from "../components/TaskStatusCard";
+import DistanceFromOfficeCard from "../components/DistanceFromOfficeCard";
+import Button from "../components/Button";
+
+import {
+    requestLocationPermission,
+    checkGpsEnabled,
+    watchUserLocation,
+} from "../utils/location";
+
+import { getDistanceInMeters } from "../utils/diatance";
+import { checkInternet } from "../utils/network";
+import { markAttendance } from "../api/attendanceApi";
+import { showErrorMsg, showSuccessMsg } from "../components/ToastMessage";
+import { Colors } from "../theme/Colors";
 
 export default function MarkAttendanceScreen() {
 
+    /* ───────────── STATE ───────────── */
     const [locationPermission, setLocationPermission] = useState(false);
     const [gpsEnabled, setGpsEnabled] = useState(false);
     const [insideOffice, setInsideOffice] = useState(false);
     const [isOnline, setIsOnline] = useState(false);
+    const [userLocation, setUserLocation] = useState(null);
 
-    const intervalRef = useRef(null);
+    const locationWatcher = useRef(null);
 
-
-
-    const runPreChecks = async () => {
-        try {
-            const networkCheck = await checkInternet();
-            setIsOnline(networkCheck);
-            if (!networkCheck) return;
-
-            // 1️⃣ Ask permission (SYSTEM POPUP)
-            const permissionGranted = await requestLocationPermission();
-            setLocationPermission(permissionGranted);
-
-            if (!permissionGranted) return;
-
-            // 2️⃣ GPS status
-            const gps = await checkGpsEnabled();
-            setGpsEnabled(gps);
-
-            if (!gps) return;
-
-
-            // 3️⃣ Get user location
-            const userLocation = await getCurrentLocation();
-
-            // 4️⃣ Office distance check
-            const officeLat = 32.086427;
-            const officeLng = 74.178301;
-
-            const distance = getDistanceInMeters(
-                userLocation.latitude,
-                userLocation.longitude,
-                officeLat,
-                officeLng
-            );
-
-            setInsideOffice(distance <= 100);
-
-
-        } catch (err) {
-            console.log("PRECHECK ERROR:", err.message);
-        }
+    /* ───────────── CONSTANTS ───────────── */
+    const OFFICE_LOCATION = {
+        latitude: 32.086427,
+        longitude: 74.178301,
     };
 
+    const OFFICE_RADIUS = 100; // meters
 
-
+    /* ───────────── LIVE LOCATION TRACKING ───────────── */
     useEffect(() => {
-        // ✅ Run immediately on mount
-        runPreChecks();
+        const startTracking = async () => {
+            locationWatcher.current = await watchUserLocation(setUserLocation);
+        };
 
-        // ✅ Then check every 3 seconds while user is on screen
-        intervalRef.current = setInterval(() => {
-            runPreChecks();
-        }, 3000); // Poll every 3 seconds
+        startTracking();
 
-        // ✅ Cleanup interval when screen unmounts
         return () => {
-            if (intervalRef.current) {
-                clearInterval(intervalRef.current);
-            }
+            locationWatcher.current?.remove();
         };
     }, []);
 
+    /* ───────────── PRE-CHECKS (AUTO UPDATE) ───────────── */
+    useEffect(() => {
+        const runPreChecks = async () => {
+            try {
+                /* 1️⃣ Internet */
+                const net = await checkInternet();
+                setIsOnline(net);
+                if (!net) return;
+
+                /* 2️⃣ Permission */
+                const permission = await requestLocationPermission();
+                setLocationPermission(permission.granted);
+                if (!permission.granted) return;
+
+                /* 3️⃣ GPS */
+                const gps = await checkGpsEnabled();
+                setGpsEnabled(gps);
+                if (!gps) return;
+
+                /* 4️⃣ Distance Check */
+                if (!userLocation) return;
+
+                const distance = getDistanceInMeters(
+                    userLocation.latitude,
+                    userLocation.longitude,
+                    OFFICE_LOCATION.latitude,
+                    OFFICE_LOCATION.longitude
+                );
+
+                setInsideOffice(distance <= OFFICE_RADIUS);
+
+            } catch (err) {
+                console.log("PRECHECK ERROR:", err.message);
+            }
+        };
+
+        runPreChecks();
+
+        const interval = setInterval(runPreChecks, 3000);
+
+        return () => clearInterval(interval);
+    }, [userLocation]);
+
+    /* ───────────── ATTENDANCE ACTION ───────────── */
     const handleAttendance = async () => {
-        if (!locationPermission) {
-            showErrorMsg("Location permission required");
-            return;
-        }
-
-        if (!gpsEnabled) {
-            showErrorMsg("Please enable GPS");
-            return;
-        }
-
-        if (!insideOffice) {
-            showErrorMsg("You are outside office location");
-            return;
-        }
+        if (!isOnline) return showErrorMsg("No internet connection");
+        if (!locationPermission) return showErrorMsg("Location permission required");
+        if (!gpsEnabled) return showErrorMsg("Please enable GPS");
+        if (!insideOffice) return showErrorMsg("You are outside office location");
 
         try {
-            const location = await getCurrentLocation();
-            const res = await markAttendance(location);
+            const res = await markAttendance(userLocation);
             showSuccessMsg(res.data.message);
         } catch (err) {
             showErrorMsg("Failed to mark attendance");
         }
     };
 
-
+    /* ───────────── UI ──────────── */
     return (
-        <SafeAreaView
-            edges={['top']}
-            style={styles.container}
-        >
-            <View>
-                <Header
-                    title={"Mark Attendance"}
-                />
-            </View>
-            <View>
-                <Image
-                    source={require("../assets/map.png")}
+        <SafeAreaView edges={["top"]} style={styles.container}>
+            <Header title="Mark Attendance" />
+
+            {/*  MAP */}
+            <View style={styles.mapWrapper}>
+
+                <MapView
                     style={styles.map}
-                    resizeMode="cover"
-                />
+                    showsUserLocation
+                    followsUserLocation
+                    liteMode={true}
+
+                    region={
+                        userLocation
+                            ? {
+                                latitude: userLocation.latitude,
+                                longitude: userLocation.longitude,
+                                latitudeDelta: 0.005,
+                                longitudeDelta: 0.005,
+                            }
+                            : {
+                                latitude: OFFICE_LOCATION.latitude,
+                                longitude: OFFICE_LOCATION.longitude,
+                                latitudeDelta: 0.01,
+                                longitudeDelta: 0.01,
+                            }
+                    }
+                >
+                    <Marker
+                        coordinate={OFFICE_LOCATION}
+                        title="Office"
+                    />
+
+                    <Circle
+                        center={OFFICE_LOCATION}
+                        radius={OFFICE_RADIUS}
+                        strokeColor="rgba(255, 0, 0, 0.5)"
+                        fillColor="rgba(255, 0, 0, 0.2)"
+                    />
+                </MapView>
             </View>
+
+            <DistanceFromOfficeCard />
+
+            {/* ✅ STATUS */}
             <View>
-                <DistanceFromOfficeCard />
+                <TaskStatusCard title="Location Permission" checked={locationPermission} />
+                <TaskStatusCard title="GPS Status" checked={gpsEnabled} />
+                <TaskStatusCard title="Inside Office Zone" checked={insideOffice} />
+                <TaskStatusCard title="Internet Connected" checked={isOnline} />
             </View>
-            <View>
-                <TaskStatusCard
-                    title="Location Permission"
-                    checked={locationPermission}   // no user toggle
-                />
 
-                <TaskStatusCard
-                    title="GPS Status"
-                    checked={gpsEnabled}
-                />
-
-                <TaskStatusCard
-                    title="Inside Office Zone"
-                    checked={insideOffice}
-
-                />
-
-                <TaskStatusCard
-                    title="Internet Connected"
-                    statusColor="green"
-                    checked={isOnline}
-                />
-            </View>
+            {/* 🔘 BUTTONS */}
             <View style={styles.buttonContainer}>
-                <Button
-                    title='Check In'
-                    buttonWidth="40%"
-                    onPress={handleAttendance}
-
-                />
-                <Button
-                    title='Check Out'
-                    buttonWidth="40%"
-                    onPress={handleAttendance}
-
-                />
+                <Button title="Check In" buttonWidth="40%" onPress={handleAttendance} />
+                <Button title="Check Out" buttonWidth="40%" onPress={handleAttendance} />
             </View>
-
-
         </SafeAreaView>
-    )
+    );
 }
 
+/* ───────────── STYLES ───────────── */
 const styles = StyleSheet.create({
     container: {
-        //flex: 1,
         paddingHorizontal: 14,
         justifyContent: "space-between",
+        //flex: 1,
     },
+    mapWrapper: {
+        height: 160,
+        borderRadius: 14,
+        overflow: "hidden",
+        marginVertical: 6,
+        borderWidth: 1,
+        borderColor: Colors.DIVIDERCOLOR
+
+    },
+
     map: {
         width: "100%",
-        height: 140,
+        height: 160,
         borderRadius: 10,
         marginVertical: 6,
+
     },
     buttonContainer: {
         flexDirection: "row",
-        marginVertical: 6,
-        justifyContent: "space-between"
-    }
-})
+        justifyContent: "space-between",
+        marginVertical: 10,
+    },
+});

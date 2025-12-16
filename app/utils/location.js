@@ -29,3 +29,20 @@ export const getCurrentLocation = async () => {
         longitude: location.coords.longitude,
     };
 };
+
+
+export const watchUserLocation = async (callback) => {
+    return await Location.watchPositionAsync(
+        {
+            accuracy: Location.Accuracy.High,
+            timeInterval: 3000,
+            distanceInterval: 5,
+        },
+        (location) => {
+            callback({
+                latitude: location.coords.latitude,
+                longitude: location.coords.longitude,
+            });
+        }
+    );
+};
