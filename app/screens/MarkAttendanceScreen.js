@@ -1,31 +1,30 @@
-import { View, Text, Image, StyleSheet } from 'react-native'
+import { View, Image, StyleSheet, AppState } from 'react-native'
 import Header from '../components/Header'
 import TaskStatusCard from '../components/TaskStatusCard'
 import { useEffect, useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import DistanceFromOfficeCard from '../components/DistanceFromOfficeCard';
-import GradientButton from '../components/GradientButton';
 import Button from '../components/Button';
 import { markAttendance } from '../api/attendanceApi';
 import { checkGpsEnabled, getCurrentLocation, requestLocationPermission } from '../utils/location';
-import { checkLocationStatus } from '../utils/location';
-import { checkInternet } from '../utils/network';
 import { getDistanceInMeters } from '../utils/diatance';
 import { showErrorMsg, showSuccessMsg } from '../components/ToastMessage'
+import { checkInternet } from '../utils/network';
 
 export default function MarkAttendanceScreen() {
 
-
-
-    const [locationPermission, setLocationPermission] = useState(true);
-    const [gpsEnabled, setGpsEnabled] = useState(true);
+    const [locationPermission, setLocationPermission] = useState(false);
+    const [gpsEnabled, setGpsEnabled] = useState(false);
     const [insideOffice, setInsideOffice] = useState(false);
-    const [isOnline, setIsOnline] = useState(true);
+    const [isOnline, setIsOnline] = useState(false);
 
-    const canMarkAttendance = locationPermission && gpsEnabled && insideOffice && isOnline;
 
     const runPreChecks = async () => {
         try {
+            const networkCheck = await checkInternet();
+            setIsOnline(networkCheck)
+            if (!isOnline) return;
+
             // 1️⃣ Ask permission (SYSTEM POPUP)
             const permissionGranted = await requestLocationPermission();
             setLocationPermission(permissionGranted);
@@ -38,9 +37,9 @@ export default function MarkAttendanceScreen() {
 
             if (!gps) return;
 
+
             // 3️⃣ Get user location
             const userLocation = await getCurrentLocation();
-            console.log("Current Location", userLocation)
 
             // 4️⃣ Office distance check
             const officeLat = 32.086427;
@@ -55,6 +54,7 @@ export default function MarkAttendanceScreen() {
 
             setInsideOffice(distance <= 100);
 
+
         } catch (err) {
             console.log("PRECHECK ERROR:", err.message);
         }
@@ -63,9 +63,16 @@ export default function MarkAttendanceScreen() {
 
 
     useEffect(() => {
-        runPreChecks();
-    }, []);
+        runPreChecks(); // initial load
 
+        const subscription = AppState.addEventListener("change", (state) => {
+            if (state === "active") {
+                runPreChecks(); // GPS toggled from notification bar
+            }
+        });
+
+        return () => subscription.remove();
+    }, []);
 
     const handleAttendance = async () => {
         if (!locationPermission) {
@@ -141,14 +148,12 @@ export default function MarkAttendanceScreen() {
                     title='Check In'
                     buttonWidth="40%"
                     onPress={handleAttendance}
-                    disabled={!canMarkAttendance}
 
                 />
                 <Button
                     title='Check Out'
                     buttonWidth="40%"
                     onPress={handleAttendance}
-                    disabled={!canMarkAttendance}
 
                 />
             </View>
