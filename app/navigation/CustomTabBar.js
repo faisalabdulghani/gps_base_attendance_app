@@ -58,9 +58,11 @@ function TabButton({ route, isFocused, tabBarIcon, tabBarLabel, onPress }) {
 export default function CustomTabBar({ state, descriptors, navigation }) {
     // ✅ IMPROVEMENT: Handle safe area for devices with notch/home indicator
     const insets = useSafeAreaInsets();
+    const bottomOffset = Platform.OS === "ios" ? insets.bottom + 10 : 10;
+
 
     return (
-        <View style={[styles.wrapper, { bottom: insets.bottom + 10 }]}>
+        <View style={[styles.wrapper, { bottom: bottomOffset }]}>
             <View style={styles.tabContainer}>
                 {state.routes.map((route, index) => {
                     const isFocused = state.index === index;
@@ -97,7 +99,6 @@ const styles = StyleSheet.create({
         position: "absolute", // ✅ FIX: Changed from "relative" to "absolute"
         width: "100%",
         alignItems: "center",
-        height: 52, // ✅ Added fixed height for compact design
     },
 
     tabContainer: {

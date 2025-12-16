@@ -78,7 +78,7 @@ export default function LeaveRequestScreen() {
             : 0;
 
     return (
-        <SafeAreaView style={styles.container} edges={["top", "bottom"]}>
+        <SafeAreaView style={styles.container} edges={['top']}>
             <Header title="Leave Request" />
 
             <LeaveDropdown

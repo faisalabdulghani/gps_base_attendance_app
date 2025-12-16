@@ -12,6 +12,7 @@ export default function HomeScreen() {
     const navigation = useNavigation();
 
     return (
+
         <View style={styles.container}>
 
             {/* HEADER */}

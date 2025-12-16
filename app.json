@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "gps_base_attendance_app",
-    "slug": "gps_base_attendance_app",
+    "name": "GPS Attendance",
+    "slug": "gps-attendance-app",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./app/assets/icon.png",
@@ -12,18 +12,52 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.yourcompany.gpsattendance",
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "This app needs your location to verify you are at the office when marking attendance.",
+        "NSLocationAlwaysUsageDescription": "This app needs your location to verify you are at the office when marking attendance."
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./app/assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "edgeToEdgeEnabled": true
+      "navigationBar": {
+        "visible": "leanback",
+        "backgroundColor": "#00000000",
+        "barStyle": "dark-content"
+      },
+      "softwareKeyboardLayoutMode": "pan",
+      "package": "com.yourcompany.gpsattendance",
+      "permissions": [
+        "ACCESS_FINE_LOCATION",
+        "ACCESS_COARSE_LOCATION",
+        "INTERNET"
+      ],
+      "versionCode": 1
     },
     "web": {
       "favicon": "./app/assets/favicon.png"
+    },
+    "plugins": [
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location to mark attendance.",
+          "locationWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location to mark attendance."
+        }
+      ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "your-project-id-here"
+      }
     }
   }
 }
