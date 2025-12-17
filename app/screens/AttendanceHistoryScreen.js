@@ -1,101 +1,109 @@
-import { View, Text, ScrollView, StyleSheet } from 'react-native'
-import React, { useState } from 'react'
-import Header from '../components/Header'
-import AttendanceCard from '../components/AttendanceCard'
-import AttendanceCalendar from '../components/AttendanceCalendar'
-import StatusLegend from '../components/StatusLegend'
-import StatsCard from '../components/StatsCard'
-import { SafeAreaView } from 'react-native-safe-area-context';
-import AttendanceStatsCard from '../components/AttendanceStatsCard'
+import { View, ScrollView, StyleSheet } from "react-native";
+import React, { useEffect, useState } from "react";
+import { SafeAreaView } from "react-native-safe-area-context";
 
+import Header from "../components/Header";
+import AttendanceCard from "../components/AttendanceCard";
+import AttendanceCalendar from "../components/AttendanceCalendar";
+import StatusLegend from "../components/StatusLegend";
+import AttendanceStatsCard from "../components/AttendanceStatsCard";
+
+import { getMontlyAttendance } from "../api/attendanceApi";
+import { Colors } from "../theme/Colors";
 
 export default function AttendanceHistoryScreen() {
+    const [attendanceList, setAttendanceList] = useState([]);
 
+    useEffect(() => {
+        const fetchAttendance = async () => {
+            try {
+                const res = await getMontlyAttendance();
+                setAttendanceList(res.data);
+            } catch {
+                console.log("Failed to load attendance");
+            }
+        };
 
+        fetchAttendance();
+    }, []);
 
-    const attendanceData = {
-        "2025-11-01": { marked: true, dotColor: "green" },
-        "2025-11-02": { marked: true, dotColor: "red" },
-        "2025-11-06": { marked: true, dotColor: "green" },
-        "2025-11-07": { marked: true, dotColor: "green" },
-        "2026-03-30": { marked: true, dotColor: "orange" },
-        "2026-03-31": { marked: true, dotColor: "orange" },
+    // ✅ STATUS NORMALIZATION
+    const getStatusLabel = (item) => {
+        if (item.halfDay) return "Leave";
+        if (item.isLate) return "Late";
+        if (item.status === "present") return "Present";
+        if (item.status === "absent") return "Absent";
+        return "Absent";
     };
 
-    return (
-        <SafeAreaView edges={['top']} style={styles.container}>
-            <Header
-                title={"Attendance History"}
-            />
-            <AttendanceCalendar
-                markedDates={attendanceData}
+    // ✅ CALENDAR MARKING
+    const markedDates = attendanceList.reduce((acc, item) => {
+        let dotColor = Colors.PRESENT;
 
-            />
+        if (item.status === "absent") dotColor = Colors.ABSENT;
+        else if (item.halfDay) dotColor = Colors.LEAVE;
+        else if (item.isLate) dotColor = Colors.LATE;
+
+        acc[item.date] = { marked: true, dotColor };
+        return acc;
+    }, {});
+
+    const formatTime = (iso) => {
+        if (!iso) return "--:--";
+        return new Date(iso).toLocaleTimeString([], {
+            hour: "2-digit",
+            minute: "2-digit",
+        });
+    };
+
+    const formatDateLabel = (dateStr) =>
+        new Date(dateStr).toLocaleDateString("en-US", {
+            weekday: "short",
+            month: "short",
+            day: "numeric",
+        });
+
+    return (
+        <SafeAreaView edges={["top"]} style={styles.container}>
+            <Header title="Attendance History" />
+
+            <AttendanceCalendar markedDates={markedDates} />
             <StatusLegend />
 
-            {/* Stats fixed */}
+            {/* STATS */}
             <View style={styles.statsRow}>
                 <AttendanceStatsCard title="Present" value="20" />
-                <AttendanceStatsCard title="Absent" value="20" />
-                <AttendanceStatsCard title="Late" value="20" />
-
+                <AttendanceStatsCard title="Absent" value="5" />
+                <AttendanceStatsCard title="Late" value="3" />
             </View>
 
-
-            {/* SCROLL ONLY THIS PART */}
+            {/* LIST */}
             <View style={{ flex: 1 }}>
-                <ScrollView
-                    showsVerticalScrollIndicator={false}
-                >
-                    <AttendanceCard
-                        dateLabel="Mon, Oct 28"
-                        status="Present"
-                        inTime="09:02 AM"
-                        outTime="05:58 PM"
-                        totalTime="8h 56m"
-                    />
-
-                    <AttendanceCard
-                        dateLabel="Tue, Oct 29"
-                        status="Absent"
-                        inTime={null}
-                        outTime={null}
-                        totalTime="0h 0m"
-                    />
-
-                    <AttendanceCard
-                        dateLabel="Wed, Oct 30"
-                        status="Late"
-                        inTime="09:17 AM"
-                        outTime="06:05 PM"
-                        totalTime="8h 48m"
-                    />
-
-                    <AttendanceCard
-                        dateLabel="Thu, Oct 31"
-                        status="Leave"
-                        inTime={null}
-                        outTime={null}
-                        totalTime="0h 0m"
-                    />
+                <ScrollView showsVerticalScrollIndicator={false}>
+                    {attendanceList.map((item) => (
+                        <AttendanceCard
+                            key={item._id}
+                            dateLabel={formatDateLabel(item.date)}
+                            status={getStatusLabel(item)}
+                            inTime={formatTime(item.checkInTime)}
+                            outTime={formatTime(item.checkOutTime)}
+                            totalTime={`${item.workDurationHours}h`}
+                        />
+                    ))}
                 </ScrollView>
             </View>
         </SafeAreaView>
-    )
+    );
 }
-
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        // justifyContent: "center",
-        // alignItems: "center",
         paddingHorizontal: 14,
-        //backgroundColor: "red"
     },
     statsRow: {
         flexDirection: "row",
         justifyContent: "space-between",
-        marginVertical: 2,
-    }
+        marginVertical: 6,
+    },
 });

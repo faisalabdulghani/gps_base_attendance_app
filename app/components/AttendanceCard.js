@@ -1,17 +1,15 @@
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { Colors } from "../theme/Colors";
-import { Ionicons, MaterialIcons } from "@expo/vector-icons";
+import { Ionicons } from "@expo/vector-icons";
 
 export default function AttendanceCard({
-    dateLabel,        // "Mon, Oct 28"
-    status,           // "Present" | "Absent" | "Late" | "Leave"
-    inTime,           // "09:02 AM"
-    outTime,          // "05:58 PM"
-    totalTime         // "8h 56m"
+    dateLabel,
+    status,
+    inTime,
+    outTime,
+    totalTime,
 }) {
-
-    // Dynamic UI based on status
     const statusStyles = {
         Present: {
             icon: "checkmark-circle",
@@ -43,7 +41,8 @@ export default function AttendanceCard({
         },
     };
 
-    const s = statusStyles[status];
+    // ✅ SAFETY FALLBACK
+    const s = statusStyles[status] || statusStyles.Absent;
 
     return (
         <View style={styles.card}>
@@ -52,17 +51,19 @@ export default function AttendanceCard({
                 <Ionicons name={s.icon} size={26} color={s.iconColor} />
             </View>
 
-            {/* MIDDLE SECTION */}
+            {/* DATA */}
             <View style={styles.datacontainer}>
                 <Text style={styles.dateText}>{dateLabel}</Text>
                 <View style={{ flexDirection: "row" }}>
-                    <Text style={styles.timeText}>In: {inTime || "--:-- --"}</Text>
-                    <Text style={[styles.timeText, { paddingHorizontal: 4 }]}>Out: {outTime || "--:-- --"} </Text>
+                    <Text style={styles.timeText}>In: {inTime}</Text>
+                    <Text style={[styles.timeText, { marginLeft: 8 }]}>
+                        Out: {outTime}
+                    </Text>
                 </View>
                 <Text style={styles.totalText}>Total: {totalTime}</Text>
             </View>
 
-            {/* STATUS BADGE */}
+            {/* STATUS */}
             <View style={[styles.badge, { backgroundColor: s.badgeBg }]}>
                 <Text style={[styles.badgeText, { color: s.badgeColor }]}>
                     {status}
