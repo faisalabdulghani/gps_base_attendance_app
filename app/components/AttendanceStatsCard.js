@@ -1,41 +1,39 @@
 import { View, Text, StyleSheet } from "react-native";
 import { Colors } from "../theme/Colors";
 
-const StatsCard = ({
-    title = "Late Days",
-    value = "3",
-    variant = "white", // "white" | "grey",
-    width = "70%",
-}) => {
+
+export default function AttendanceStatsCard(
+    { title = " ",
+        value = " ",
+        variant = "white", // "white" | "grey",
+    }
+) {
     return (
         <View style={[
             styles.card,
             variant === "grey" ? styles.greyCard : styles.whiteCard,
-            { width: width }
+
         ]}>
             <Text style={styles.title}>{title}</Text>
             <Text style={styles.value}>{value}</Text>
         </View>
-    );
-};
+    )
+}
 
-export default StatsCard;
 
 const styles = StyleSheet.create({
     card: {
-        paddingVertical: 12,
+        paddingVertical: 8,
         paddingHorizontal: 12,
         borderRadius: 10,
+        width: "30%",
     },
 
-    /* White Clean Card (Present - 20) */
     whiteCard: {
         backgroundColor: Colors.WHITE,
-        // borderWidth: 1,
-        //  borderColor: "#ECECEC",
+
     },
 
-    /* Light Gradient (Late Days - 3) */
     greyCard: {
         backgroundColor: "rgba(214, 214, 216, 0.2)",
         borderColor: "rgba(214, 214, 216, 0.35)",
@@ -43,12 +41,12 @@ const styles = StyleSheet.create({
     },
 
     title: {
-        fontSize: 14,
+        fontSize: 12,
         color: Colors.TEXTLIGHT,
     },
 
     value: {
-        fontSize: 28,
+        fontSize: 20,
         fontWeight: "700",
         color: Colors.BLACK,
     },

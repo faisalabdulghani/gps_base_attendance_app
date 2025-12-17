@@ -55,11 +55,10 @@ export default function AttendanceCard({
             {/* MIDDLE SECTION */}
             <View style={styles.datacontainer}>
                 <Text style={styles.dateText}>{dateLabel}</Text>
-
-                <Text style={styles.timeText}>
-                    In: {inTime || "--:-- --"}
-                </Text>
-                <Text style={styles.timeText}>Out: {outTime || "--:-- --"} </Text>
+                <View style={{ flexDirection: "row" }}>
+                    <Text style={styles.timeText}>In: {inTime || "--:-- --"}</Text>
+                    <Text style={[styles.timeText, { paddingHorizontal: 4 }]}>Out: {outTime || "--:-- --"} </Text>
+                </View>
                 <Text style={styles.totalText}>Total: {totalTime}</Text>
             </View>
 
@@ -77,9 +76,9 @@ const styles = StyleSheet.create({
     card: {
         flexDirection: "row",
         backgroundColor: Colors.WHITE,
-        padding: 16,
+        padding: 8,
         borderRadius: 10,
-        marginVertical: 8,
+        marginVertical: 4,
         //alignItems: "center",
     },
     iconContainer: {
@@ -88,7 +87,7 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         justifyContent: "center",
         alignItems: "center",
-        //margin: 16,
+        marginVertical: 4
     },
 
     datacontainer: {
@@ -97,18 +96,20 @@ const styles = StyleSheet.create({
         flexDirection: "column"
     },
     dateText: {
-        fontSize: 16,
+        fontSize: 14,
         fontWeight: "700",
         color: Colors.BLACK,
+
     },
     timeText: {
         marginVertical: 2,
-        fontSize: 14,
+        fontSize: 11,
         color: Colors.TEXTLIGHT,
+
     },
     totalText: {
         paddingVertical: 2,
-        fontSize: 14,
+        fontSize: 12,
         color: Colors.TEXTDARK,
         fontWeight: "500",
     },

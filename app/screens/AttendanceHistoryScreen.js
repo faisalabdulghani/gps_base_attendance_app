@@ -6,6 +6,7 @@ import AttendanceCalendar from '../components/AttendanceCalendar'
 import StatusLegend from '../components/StatusLegend'
 import StatsCard from '../components/StatsCard'
 import { SafeAreaView } from 'react-native-safe-area-context';
+import AttendanceStatsCard from '../components/AttendanceStatsCard'
 
 
 export default function AttendanceHistoryScreen() {
@@ -34,9 +35,10 @@ export default function AttendanceHistoryScreen() {
 
             {/* Stats fixed */}
             <View style={styles.statsRow}>
-                <StatsCard title="Present" value="20" width="30%" />
-                <StatsCard title="Absent" value="2" width="30%" />
-                <StatsCard title="Late" value="1" width="30%" />
+                <AttendanceStatsCard title="Present" value="20" />
+                <AttendanceStatsCard title="Absent" value="20" />
+                <AttendanceStatsCard title="Late" value="20" />
+
             </View>
 
 
