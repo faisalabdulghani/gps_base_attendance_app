@@ -1,7 +1,7 @@
 import { View, StyleSheet, Platform } from "react-native";
 import { useEffect, useRef, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import MapView, { Marker, Circle } from "react-native-maps";
+import MapView, { Marker, Circle, PROVIDER_GOOGLE } from "react-native-maps";
 
 import Header from "../components/Header";
 import TaskStatusCard from "../components/TaskStatusCard";
@@ -114,14 +114,24 @@ export default function MarkAttendanceScreen() {
                 {mapReady ? (
                     <MapView
                         style={styles.map}
+                        provider={PROVIDER_GOOGLE}
                         showsUserLocation
-                        initialRegion={{
-                            latitude: OFFICE_LOCATION.latitude,
-                            longitude: OFFICE_LOCATION.longitude,
-                            latitudeDelta: 0.01,
-                            longitudeDelta: 0.01,
-                        }}
-                        {...(Platform.OS === "android" ? { liteMode: true } : {})}
+                        followsUserLocation
+                        region={
+                            userLocation
+                                ? {
+                                    latitude: userLocation.latitude,
+                                    longitude: userLocation.longitude,
+                                    latitudeDelta: 0.005,
+                                    longitudeDelta: 0.005,
+                                }
+                                : {
+                                    latitude: OFFICE_LOCATION.latitude,
+                                    longitude: OFFICE_LOCATION.longitude,
+                                    latitudeDelta: 0.01,
+                                    longitudeDelta: 0.01,
+                                }
+                        }
                     >
                         <Marker coordinate={OFFICE_LOCATION} />
                         <Circle
@@ -131,6 +141,7 @@ export default function MarkAttendanceScreen() {
                             fillColor="rgba(255,0,0,0.2)"
                         />
                     </MapView>
+
                 ) : (
                     <View style={styles.mapPlaceholder} />
                 )}
