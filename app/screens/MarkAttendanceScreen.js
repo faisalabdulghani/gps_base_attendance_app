@@ -1,4 +1,4 @@
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, Platform } from "react-native";
 import { useEffect, useRef, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import MapView, { Marker, Circle } from "react-native-maps";
@@ -28,6 +28,7 @@ export default function MarkAttendanceScreen() {
     const [insideOffice, setInsideOffice] = useState(false);
     const [isOnline, setIsOnline] = useState(false);
     const [userLocation, setUserLocation] = useState(null);
+    const [mapReady, setMapReady] = useState(false);
 
     const locationWatcher = useRef(null);
 
@@ -37,62 +38,55 @@ export default function MarkAttendanceScreen() {
         longitude: 74.178301,
     };
 
-    const OFFICE_RADIUS = 100; // meters
+    const OFFICE_RADIUS = 100;
 
-    /* ───────────── LIVE LOCATION TRACKING ───────────── */
+    /* ───────────── INIT (PERMISSION + GPS FIRST) ───────────── */
     useEffect(() => {
+        const init = async () => {
+            const net = await checkInternet();
+            setIsOnline(net);
+            if (!net) return;
+
+            const permission = await requestLocationPermission();
+            if (!permission.granted) return;
+            setLocationPermission(true);
+
+            const gps = await checkGpsEnabled();
+            if (!gps) return;
+            setGpsEnabled(true);
+
+            // ✅ NOW map is allowed to mount
+            setMapReady(true);
+        };
+
+        init();
+    }, []);
+
+    /* ───────────── START LOCATION WATCH AFTER MAP READY ───────────── */
+    useEffect(() => {
+        if (!mapReady) return;
+
         const startTracking = async () => {
             locationWatcher.current = await watchUserLocation(setUserLocation);
         };
 
         startTracking();
 
-        return () => {
-            locationWatcher.current?.remove();
-        };
-    }, []);
+        return () => locationWatcher.current?.remove();
+    }, [mapReady]);
 
-    /* ───────────── PRE-CHECKS (AUTO UPDATE) ───────────── */
+    /* ───────────── DISTANCE CHECK ───────────── */
     useEffect(() => {
-        const runPreChecks = async () => {
-            try {
-                /* 1️⃣ Internet */
-                const net = await checkInternet();
-                setIsOnline(net);
-                if (!net) return;
+        if (!userLocation) return;
 
-                /* 2️⃣ Permission */
-                const permission = await requestLocationPermission();
-                setLocationPermission(permission.granted);
-                if (!permission.granted) return;
+        const distance = getDistanceInMeters(
+            userLocation.latitude,
+            userLocation.longitude,
+            OFFICE_LOCATION.latitude,
+            OFFICE_LOCATION.longitude
+        );
 
-                /* 3️⃣ GPS */
-                const gps = await checkGpsEnabled();
-                setGpsEnabled(gps);
-                if (!gps) return;
-
-                /* 4️⃣ Distance Check */
-                if (!userLocation) return;
-
-                const distance = getDistanceInMeters(
-                    userLocation.latitude,
-                    userLocation.longitude,
-                    OFFICE_LOCATION.latitude,
-                    OFFICE_LOCATION.longitude
-                );
-
-                setInsideOffice(distance <= OFFICE_RADIUS);
-
-            } catch (err) {
-                console.log("PRECHECK ERROR:", err.message);
-            }
-        };
-
-        runPreChecks();
-
-        const interval = setInterval(runPreChecks, 3000);
-
-        return () => clearInterval(interval);
+        setInsideOffice(distance <= OFFICE_RADIUS);
     }, [userLocation]);
 
     /* ───────────── ATTENDANCE ACTION ───────────── */
@@ -105,53 +99,41 @@ export default function MarkAttendanceScreen() {
         try {
             const res = await markAttendance(userLocation);
             showSuccessMsg(res.data.message);
-        } catch (err) {
+        } catch {
             showErrorMsg("Failed to mark attendance");
         }
     };
 
-    /* ───────────── UI ──────────── */
+    /* ───────────── UI ───────────── */
     return (
         <SafeAreaView edges={["top"]} style={styles.container}>
             <Header title="Mark Attendance" />
 
-            {/*  MAP */}
+            {/* 🗺 MAP */}
             <View style={styles.mapWrapper}>
-
-                <MapView
-                    style={styles.map}
-                    showsUserLocation
-                    followsUserLocation
-                    liteMode={true}
-
-                    region={
-                        userLocation
-                            ? {
-                                latitude: userLocation.latitude,
-                                longitude: userLocation.longitude,
-                                latitudeDelta: 0.005,
-                                longitudeDelta: 0.005,
-                            }
-                            : {
-                                latitude: OFFICE_LOCATION.latitude,
-                                longitude: OFFICE_LOCATION.longitude,
-                                latitudeDelta: 0.01,
-                                longitudeDelta: 0.01,
-                            }
-                    }
-                >
-                    <Marker
-                        coordinate={OFFICE_LOCATION}
-                        title="Office"
-                    />
-
-                    <Circle
-                        center={OFFICE_LOCATION}
-                        radius={OFFICE_RADIUS}
-                        strokeColor="rgba(255, 0, 0, 0.5)"
-                        fillColor="rgba(255, 0, 0, 0.2)"
-                    />
-                </MapView>
+                {mapReady ? (
+                    <MapView
+                        style={styles.map}
+                        showsUserLocation
+                        initialRegion={{
+                            latitude: OFFICE_LOCATION.latitude,
+                            longitude: OFFICE_LOCATION.longitude,
+                            latitudeDelta: 0.01,
+                            longitudeDelta: 0.01,
+                        }}
+                        {...(Platform.OS === "android" ? { liteMode: true } : {})}
+                    >
+                        <Marker coordinate={OFFICE_LOCATION} />
+                        <Circle
+                            center={OFFICE_LOCATION}
+                            radius={OFFICE_RADIUS}
+                            strokeColor="rgba(255,0,0,0.5)"
+                            fillColor="rgba(255,0,0,0.2)"
+                        />
+                    </MapView>
+                ) : (
+                    <View style={styles.mapPlaceholder} />
+                )}
             </View>
 
             <DistanceFromOfficeCard />
@@ -178,7 +160,6 @@ const styles = StyleSheet.create({
     container: {
         paddingHorizontal: 14,
         justifyContent: "space-between",
-        //flex: 1,
     },
     mapWrapper: {
         height: 160,
@@ -186,16 +167,15 @@ const styles = StyleSheet.create({
         overflow: "hidden",
         marginVertical: 6,
         borderWidth: 1,
-        borderColor: Colors.DIVIDERCOLOR
-
+        borderColor: Colors.DIVIDERCOLOR,
     },
-
     map: {
         width: "100%",
-        height: 160,
-        borderRadius: 10,
-        marginVertical: 6,
-
+        height: "100%",
+    },
+    mapPlaceholder: {
+        height: "100%",
+        backgroundColor: "#eee",
     },
     buttonContainer: {
         flexDirection: "row",

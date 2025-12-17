@@ -24,24 +24,29 @@
       }
     },
     "android": {
-      "adaptiveIcon": {
-        "foregroundImage": "./app/assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
-      },
-      "navigationBar": {
-        "visible": "leanback",
-        "backgroundColor": "#00000000",
-        "barStyle": "dark-content"
-      },
-      "softwareKeyboardLayoutMode": "pan",
-      "package": "com.yourcompany.gpsattendance",
-      "permissions": [
-        "ACCESS_FINE_LOCATION",
-        "ACCESS_COARSE_LOCATION",
-        "INTERNET"
-      ],
-      "versionCode": 1
-    },
+  "adaptiveIcon": {
+    "foregroundImage": "./app/assets/adaptive-icon.png",
+    "backgroundColor": "#ffffff"
+  },
+  "navigationBar": {
+    "visible": "leanback",
+    "backgroundColor": "#00000000",
+    "barStyle": "dark-content"
+  },
+  "softwareKeyboardLayoutMode": "pan",
+  "package": "com.yourcompany.gpsattendance",
+  "permissions": [
+    "ACCESS_FINE_LOCATION",
+    "ACCESS_COARSE_LOCATION",
+    "INTERNET"
+  ],
+  "config": {
+    "googleMaps": {
+      "apiKey": "AIzaSyBCbBfZO_fmFcNAPp8l8q74TwVnNhfde5I"
+    }
+  },
+  "versionCode": 1
+},
     "web": {
       "favicon": "./app/assets/favicon.png"
     },
@@ -56,7 +61,7 @@
     ],
     "extra": {
       "eas": {
-        "projectId": "your-project-id-here"
+        "projectId": "affc4c0a-71c9-4b30-bcf9-69eceff9e968"
       }
     }
   }
