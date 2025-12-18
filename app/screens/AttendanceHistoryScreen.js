@@ -20,7 +20,7 @@ export default function AttendanceHistoryScreen() {
                 const res = await getMontlyAttendance();
                 setAttendanceList(res.data);
             } catch {
-                console.log("Failed to load attendance");
+                console.log(err, "Failed to load attendance");
             }
         };
 
