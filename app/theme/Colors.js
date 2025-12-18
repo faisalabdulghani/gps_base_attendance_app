@@ -15,6 +15,7 @@ export const Colors = {
     OFFWHITE: "#F7F9FC",
     PRESENT: "#22C55E",
     LATE: "#F59E0B",
+    EARLYOUT: "#f5490bff",
     ABSENT: "#FF4D4F",
     LEAVE: "#2D9CDB",
     DIVIDERCOLOR: "#e5e7eb"

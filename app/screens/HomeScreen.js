@@ -5,11 +5,55 @@ import GradientButton from '../components/GradientButton'
 import { Colors } from '../theme/Colors'
 import MainHeader from '../components/MainHeader'
 import { useNavigation } from '@react-navigation/native'
+import { useEffect, useState } from 'react'
+import { showErrorMsg } from '../components/ToastMessage'
+import { getTodayData } from '../api/todayDataApi'
+import { getSummary } from '../api/summaryApi'
+import { formatHoursMinutes, formatTime } from '../utils/timeFormat'
+import { getStatusConfig } from '../utils/attendanceStatus'
 
 
 export default function HomeScreen() {
 
+
+    const [loading, setLoading] = useState(false);
+    const [todayReport, setTodayReport] = useState(null);
+    const [summaryReport, setSummaryReport] = useState(null);
+
     const navigation = useNavigation();
+
+
+    const getReports = () => {
+        setLoading(true);
+        Promise.all([
+            getTodayData(),
+            getSummary()
+        ])
+            .then(([todayRes, summaryRes]) => {
+                setTodayReport(todayRes.data || {});
+                setSummaryReport(summaryRes.data || {});
+            })
+            .catch((err) => {
+                const msg =
+                    err?.response?.data?.message || "Failed to fetch Data";
+                showErrorMsg(msg);
+                console.log("REPORT FETCH ERROR:", msg);
+            })
+            .finally(() => setLoading(false));
+    };
+
+
+    useEffect(() => {
+
+        getReports();
+
+    }, []);
+
+    const statusConfig = getStatusConfig(todayReport)
+        ;
+
+
+
 
     return (
 
@@ -23,13 +67,22 @@ export default function HomeScreen() {
             {/* STATUS CARD (OVERLAPPING ON HEADER) */}
             <TouchableOpacity
                 style={styles.statusCardWrapper}
-                onPress={() => navigation.navigate('DailyAttendanceDetail')}
-
+                onPress={() =>
+                    navigation.navigate("DailyAttendanceDetail", {
+                        status: statusConfig?.label || "No Status",
+                        statusColor: statusConfig?.color || Colors.TEXTLIGHT,
+                        checkIn: formatTime(todayReport?.checkInTime),
+                        checkOut: formatTime(todayReport?.checkOutTime),
+                        totalWorkingHours: formatHoursMinutes(todayReport?.workingHours) || 0
+                    })
+                }
             >
                 <StatusCard
-                    statusColor={Colors.PRESENT}
-                    totalTime="08:15"
-                    checkOut="05:15 PM"
+                    status={statusConfig?.label || "No Status"}
+                    statusColor={statusConfig?.color || Colors.TEXTLIGHT}
+                    totalTime={todayReport?.workingHours || 0}
+                    checkIn={formatTime(todayReport?.checkInTime)}
+                    checkOut={formatTime(todayReport?.checkOutTime)}
                 />
             </TouchableOpacity>
 
@@ -43,12 +96,23 @@ export default function HomeScreen() {
 
 
                 <View style={styles.row}>
-                    <StatsCard title="Late Days" value="3" width="48%" />
-                    <StatsCard title="Early Out" value="2" width="48%" />
+                    <StatsCard
+                        title="Late Days"
+                        value={summaryReport?.counts?.late || 0}
+                        width="48%"
+                    />
+                    <StatsCard
+                        title="Early Out"
+                        value={summaryReport?.counts?.earlyOuts || 0}
+                        width="48%"
+                    />
                 </View>
 
                 <View style={styles.row}>
-                    <StatsCard title="Hours this week" value="32h 15m" width="100%" />
+                    <StatsCard
+                        title="Hours this week"
+                        value={formatHoursMinutes(summaryReport?.workingHours?.weekly)}
+                        width="100%" />
                 </View>
             </View>
 

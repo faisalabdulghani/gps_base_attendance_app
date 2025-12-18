@@ -12,15 +12,28 @@ import { getMontlyAttendance } from "../api/attendanceApi";
 import { Colors } from "../theme/Colors";
 
 export default function AttendanceHistoryScreen() {
+    // ✅ ALWAYS ARRAY
     const [attendanceList, setAttendanceList] = useState([]);
 
     useEffect(() => {
         const fetchAttendance = async () => {
             try {
                 const res = await getMontlyAttendance();
-                setAttendanceList(res.data);
-            } catch {
-                console.log(err, "Failed to load attendance");
+
+                // 🔍 LOG ONCE TO CONFIRM SHAPE
+                console.log("Attendance API:", res.data);
+
+                // ✅ HANDLE ALL API SHAPES
+                if (Array.isArray(res.data)) {
+                    setAttendanceList(res.data);
+                } else if (Array.isArray(res.data.data)) {
+                    setAttendanceList(res.data.data);
+                } else {
+                    setAttendanceList([]);
+                }
+            } catch (err) {
+                console.log("Failed to load attendance", err);
+                setAttendanceList([]);
             }
         };
 
@@ -36,17 +49,19 @@ export default function AttendanceHistoryScreen() {
         return "Absent";
     };
 
-    // ✅ CALENDAR MARKING
-    const markedDates = attendanceList.reduce((acc, item) => {
-        let dotColor = Colors.PRESENT;
+    // ✅ SAFE REDUCE
+    const markedDates = Array.isArray(attendanceList)
+        ? attendanceList.reduce((acc, item) => {
+            let dotColor = Colors.PRESENT;
 
-        if (item.status === "absent") dotColor = Colors.ABSENT;
-        else if (item.halfDay) dotColor = Colors.LEAVE;
-        else if (item.isLate) dotColor = Colors.LATE;
+            if (item.status === "absent") dotColor = Colors.ABSENT;
+            else if (item.halfDay) dotColor = Colors.LEAVE;
+            else if (item.isLate) dotColor = Colors.LATE;
 
-        acc[item.date] = { marked: true, dotColor };
-        return acc;
-    }, {});
+            acc[item.date] = { marked: true, dotColor };
+            return acc;
+        }, {})
+        : {};
 
     const formatTime = (iso) => {
         if (!iso) return "--:--";
@@ -70,7 +85,7 @@ export default function AttendanceHistoryScreen() {
             <AttendanceCalendar markedDates={markedDates} />
             <StatusLegend />
 
-            {/* STATS */}
+            {/* STATS (can be dynamic later) */}
             <View style={styles.statsRow}>
                 <AttendanceStatsCard title="Present" value="20" />
                 <AttendanceStatsCard title="Absent" value="5" />

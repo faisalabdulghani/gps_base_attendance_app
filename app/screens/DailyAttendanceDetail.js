@@ -4,8 +4,20 @@ import Header from '../components/Header'
 import GeoLocationLog from '../components/GeoLocationLog'
 import TodayDate from '../components/TodayDate'
 import AttendanceDetailCard from '../components/AttendanceDetailCard'
+import { useRoute } from '@react-navigation/native'
+import { getTodayFormattedDate } from '../utils/dateHelper'
 
 export default function DailyAttendanceDetail() {
+
+    const route = useRoute();
+    const {
+        status,
+        statusColor,
+        checkIn,
+        checkOut,
+        totalWorkingHours
+    } = route.params || {};
+
     return (
         <SafeAreaView style={styles.container}
             edges={['top']}
@@ -14,15 +26,15 @@ export default function DailyAttendanceDetail() {
                 title={'Daily Attendance Detail'} />
             <View style={{ marginVertical: 8 }}>
 
-                <TodayDate dateLabel="Mon, 28 Oct 2024" />
+                <TodayDate dateLabel={getTodayFormattedDate()} />
             </View>
             <View style={{ marginVertical: 8 }}>
 
                 <AttendanceDetailCard
-                    checkInTime="09:02 AM"
-                    checkOutTime="06:15 PM"
-                    totalHours="8h 13m"
-                    status="Present"
+                    checkInTime={checkIn}
+                    checkOutTime={checkOut}
+                    totalHours={totalWorkingHours}
+                    status={status}
 
                 />
             </View>
@@ -31,8 +43,8 @@ export default function DailyAttendanceDetail() {
                 <GeoLocationLog
                     checkInAdress='123 Main Street, Anytown, USA'
                     checkOutAdress='123 Main Street, Anytown, USA'
-                    checkInTime='09:02 AM'
-                    checkOutTime='09:02 AM'
+                    checkInTime={checkIn}
+                    checkOutTime={checkOut}
                 />
             </View>
 
